@@ -1,0 +1,19 @@
+# Internal docs — architecture/structure notes for local reference only
+docs/
+
+# Blog submission pipeline — raw drafts and the converter script stay local
+submissions/
+scripts/publish_blog.py
+scripts/__pycache__/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode/
+*.log

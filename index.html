@@ -2,7 +2,12 @@
 <html lang="en-ZW">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="YAL Gweru">
 <title>Young AI Leaders Gweru Hub | Youth AI &amp; Tech Innovation in Zimbabwe</title>
 <meta name="description" content="Gweru Hub empowers Zimbabwean youth through ethical AI, social innovation and community tech. Join young AI leaders building real impact across the Midlands Province.">
 <meta name="keywords" content="youth Zimbabwe, tech Zimbabwe, AI Zimbabwe, social innovation Africa, youth empowerment, AI for Good, Gweru, ethical AI, community impact">
@@ -11,8 +16,12 @@
 <meta name="geo.region" content="ZW-MI">
 <meta name="geo.placename" content="Gweru, Midlands Province, Zimbabwe">
 <link rel="canonical" href="https://yailgweru.github.io/">
-<link rel="icon" href="assets/logo.png" type="image/png">
-<link rel="apple-touch-icon" href="assets/logo.png">
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="assets/favicon/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="icon" href="assets/favicon/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="assets/favicon/favicon-96x96.png" type="image/png" sizes="96x96">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="assets/favicon/site.webmanifest">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://yailgweru.github.io/">
 <meta property="og:title" content="Young AI Leaders Gweru Hub | Youth AI &amp; Tech Innovation in Zimbabwe">
@@ -175,12 +184,19 @@
   #loader p { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; }
 
   @media (max-width: 640px) {
-    #holo { position: fixed !important; left: 50% !important; top: auto !important; bottom: 14px; transform: translateX(-50%); width: 92vw; max-width: 380px; }
+    #holo { position: fixed !important; left: 50% !important; top: auto !important; bottom: calc(14px + env(safe-area-inset-bottom)); transform: translateX(-50%); width: 92vw; max-width: 380px; }
     #holo.open { animation: holoInMobile .4s ease; }
     @keyframes holoInMobile { from { opacity: 0; transform: translateX(-50%) translateY(30px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
     .holo-beam { display: none; }
+    .brand { top: calc(16px + env(safe-area-inset-top)); }
     .brand .t1 { font-size: 12px; }
-    .hint { font-size: 11px; padding: 7px 14px; bottom: auto; top: 78px; }
+    .hint { font-size: 11px; padding: 7px 14px; bottom: auto; top: calc(78px + env(safe-area-inset-top)); }
+    /* keep interactive controls at a comfortably tappable size on touch screens */
+    .holo-close, .story-close { width: 40px; height: 40px; font-size: 16px; }
+    .holo-item-btn { padding: 13px 14px; min-height: 44px; }
+    #story { width: min(430px, 100vw); }
+    .story-head { padding: calc(22px + env(safe-area-inset-top)) 54px 16px 22px; }
+    .story-body { padding-bottom: calc(34px + env(safe-area-inset-bottom)); }
   }
   @media (prefers-reduced-motion: reduce) {
     #holo.open, .holo-panel::before { animation: none !important; }

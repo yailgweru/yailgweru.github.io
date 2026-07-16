@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-ZW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Blog | Young AI Leaders Gweru Hub</title>
+<meta name="description" content="Stories from Young AI Leaders Gweru Hub — ethical AI, social innovation and youth-led tech projects from the Midlands, Zimbabwe.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<link rel="canonical" href="https://yailgweru.github.io/blogs/">
+<link rel="icon" href="../assets/favicon/favicon.ico" sizes="any">
+<link rel="icon" href="../assets/favicon/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/favicon/apple-touch-icon.png" sizes="180x180">
+<link rel="manifest" href="../assets/favicon/site.webmanifest">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://yailgweru.github.io/blogs/">
+<meta property="og:title" content="Blog | Young AI Leaders Gweru Hub">
+<meta property="og:description" content="Stories from Young AI Leaders Gweru Hub — ethical AI, social innovation and youth-led tech projects from the Midlands, Zimbabwe.">
+<meta property="og:image" content="https://yailgweru.github.io/assets/logo.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0a0a0a">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #0a0a0a; color: rgba(222,242,250,.92); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 64px; }
+  .back { display: inline-block; font-size: 13px; letter-spacing: .5px; color: #6be8ff; text-decoration: none; margin-bottom: 22px; }
+  .back:hover { text-decoration: underline; }
+  h1 { font-size: clamp(26px, 5vw, 36px); color: #eaf9ff; margin-bottom: 8px; }
+  .sub { font-size: 14px; color: rgba(191,243,255,.65); margin-bottom: 32px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+  .card { background: rgba(107,232,255,.05); border: 1px solid rgba(107,232,255,.22); border-radius: 10px; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+  .card:hover { border-color: rgba(107,232,255,.6); transform: translateY(-2px); }
+  .card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: #10131a; }
+  .card-body { padding: 14px 16px 18px; }
+  .card h2 { font-size: 16px; color: #d8f8ff; line-height: 1.4; margin-bottom: 6px; }
+  .card p { font-size: 13px; color: rgba(222,242,250,.75); line-height: 1.55; margin-bottom: 10px; }
+  .card .meta { font-size: 11px; color: rgba(191,243,255,.6); letter-spacing: .4px; }
+  .empty { font-size: 14px; color: rgba(191,243,255,.6); }
+  @media (max-width: 640px) { .wrap { padding: 18px 16px 48px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back" href="../index.html">&larr; Young AI Leaders Gweru Hub</a>
+  <h1>Hub Blog</h1>
+  <p class="sub">Stories from the Young AI Leaders Gweru Hub — projects, workshops and lessons from building AI in the Midlands.</p>
+  <div class="grid" id="grid"><p class="empty">Loading posts&hellip;</p></div>
+</div>
+<script>
+fetch('manifest.json').then(function (r) { return r.json(); }).then(function (posts) {
+  var grid = document.getElementById('grid');
+  posts.sort(function (a, b) { return b.date.localeCompare(a.date); });
+  if (!posts.length) { grid.innerHTML = '<p class="empty">No posts yet — check back soon.</p>'; return; }
+  grid.innerHTML = posts.map(function (p) {
+    var tags = (p.tags || []).slice(0, 3).map(function (t) { return '#' + t; }).join(' ');
+    return '<a class="card" href="' + p.slug + '.html">' +
+      '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
+      '<div class="card-body"><h2>' + p.title + '</h2><p>' + p.excerpt + '</p>' +
+      '<div class="meta">' + p.date + (tags ? ' &middot; ' + tags : '') + '</div></div></a>';
+  }).join('');
+}).catch(function (err) {
+  console.error('Failed to load manifest.json', err);
+  document.getElementById('grid').innerHTML = '<p class="empty">Could not load posts.</p>';
+});
+</script>
+</body>
+</html>

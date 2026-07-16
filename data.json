@@ -1,0 +1,295 @@
+{
+  "site": {
+    "title": "Young AI Leaders Gweru | African Youth Tech & AI Innovation Hub",
+    "brand": {
+      "name": "Young AI Leaders",
+      "tagline": "Gweru Hub · Zimbabwe"
+    },
+    "hint": "Drag to rotate · tap an anchor to focus",
+    "storyKicker": "Hub Blog",
+    "seo": {
+      "title": "Young AI Leaders Gweru | African Youth Tech & AI Innovation Hub",
+      "h1": "African Youth Tech Hub — AI, Innovation & Social Impact from Gweru, Zimbabwe",
+      "description": "Southern Africa's youth-led tech hub in Gweru — building ethical AI, digital innovation and social impact for African communities. Join young African leaders shaping the continent's technology future.",
+      "intro": "Young AI Leaders Gweru Hub is a Zimbabwe-based node in the global African youth tech movement. We connect young innovators across Africa through ethical artificial intelligence, community technology, social innovation and hands-on AI literacy — rooted in African languages, local context and youth leadership.",
+      "keywords": [
+        "tech Africa",
+        "African tech hub",
+        "African technology",
+        "youth tech Africa",
+        "African innovation",
+        "Southern Africa tech",
+        "African AI",
+        "Africa tech community",
+        "African youth tech",
+        "digital innovation Africa",
+        "tech hub Africa",
+        "African AI leaders",
+        "technology Africa",
+        "AI in Africa",
+        "African social innovation",
+        "youth Zimbabwe",
+        "tech Zimbabwe",
+        "AI Zimbabwe",
+        "ethical AI Africa",
+        "AI for Good Africa",
+        "young AI leaders",
+        "Gweru tech hub",
+        "Zimbabwe technology",
+        "AI literacy Africa",
+        "community tech Africa",
+        "Afrotech",
+        "youth empowerment Africa"
+      ],
+      "topics": [
+        "Technology in Africa",
+        "Artificial Intelligence in Africa",
+        "African Youth Innovation",
+        "Social Innovation in Africa",
+        "Digital Transformation Africa",
+        "Ethical AI Africa",
+        "African Tech Education",
+        "Community Technology Africa",
+        "Southern Africa Innovation",
+        "AI for Good Africa"
+      ],
+      "canonicalUrl": "https://yailgweru.github.io/",
+      "ogImage": "https://yailgweru.github.io/assets/logo.png",
+      "locale": "en_ZW",
+      "twitterHandle": ""
+    }
+  },
+  "logo": "assets/logo.png",
+  "sections": [
+    {
+      "id": "about",
+      "title": "About",
+      "sub": "Who we are",
+      "color": 1556100,
+      "pos": [
+        6.6,
+        2.8,
+        0.6
+      ],
+      "items": [
+        {
+          "label": "Our mission",
+          "detail": "Empowering Gweru’s youth to build ethical, responsible and African-rooted AI — localised for our languages, our context and Africa’s unique challenges."
+        },
+        {
+          "label": "The hub",
+          "detail": "A tight-knit African youth tech community of up to 50 young AI leaders in Gweru, Midlands Province — collaborating on real projects with community impact across Zimbabwe and Southern Africa."
+        },
+        {
+          "label": "AI for Good network",
+          "detail": "We are the Gweru Hub of the global Young AI Leaders Community, an ITU AI for Good initiative connecting African youth tech hubs with innovators worldwide."
+        }
+      ]
+    },
+    {
+      "id": "projects",
+      "title": "Projects",
+      "sub": "What we build",
+      "color": 16098851,
+      "pos": [
+        2.4,
+        4.6,
+        -6
+      ],
+      "items": [
+        {
+          "label": "AI for agriculture",
+          "detail": "Community-based African AI solutions supporting smallholder farmers — tackling food security and agri-tech challenges across the Midlands and rural Zimbabwe."
+        },
+        {
+          "label": "Education & languages",
+          "detail": "Localised AI learning tools that embrace African languages, democratising tech and AI literacy for learners in Gweru, Zimbabwe and rural African communities."
+        },
+        {
+          "label": "SDG-aligned impact",
+          "detail": "Every hub project maps to the UN Sustainable Development Goals — measurable, ethical and community-first technology built for Africa."
+        }
+      ]
+    },
+    {
+      "id": "team",
+      "title": "Team",
+      "sub": "The leaders",
+      "color": 15750796,
+      "pos": [
+        -6.4,
+        1.8,
+        -2.4
+      ],
+      "items": [
+        {
+          "label": "Hub leadership",
+          "detail": "Led by young Zimbabwean AI leaders including Brandon T. Bande and Andrea Nokwanda Bule — driving Africa-facing tech innovation from Gweru, 2025–2027."
+        },
+        {
+          "label": "Our members",
+          "detail": "Up to 50 passionate African youth in tech — students, developers, researchers and change-makers — each committed to at least one community impact project per year."
+        },
+        {
+          "label": "Join the hub",
+          "detail": "Applications open through the AI for Good Young AI Leaders programme. Bring your ideas — we’ll bring the community."
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "title": "Contact",
+      "sub": "Reach out",
+      "color": 4099824,
+      "pos": [
+        -3.6,
+        3.6,
+        5.6
+      ],
+      "items": [
+        {
+          "label": "Email us",
+          "detail": "gweruhub@youngaileaders.org (placeholder — replace with your official hub address)."
+        },
+        {
+          "label": "Social media",
+          "detail": "Follow the Gweru Hub on LinkedIn, X and Instagram for events, workshops and project updates."
+        },
+        {
+          "label": "Find us",
+          "detail": "Gweru, Midlands Province, Zimbabwe — a growing African tech hub at the heart of the country, now a node in the global AI and innovation map."
+        }
+      ]
+    },
+    {
+      "id": "community",
+      "title": "Community",
+      "sub": "Our people",
+      "color": 16743001,
+      "pos": [
+        -7.2,
+        0.5,
+        0.3
+      ],
+      "items": [
+        {
+          "label": "Our community",
+          "detail": "An open, inclusive African youth tech space in Gweru — students, creatives, developers and dreamers united by curiosity about AI and a drive for local impact."
+        },
+        {
+          "label": "Get involved",
+          "detail": "Volunteer at tech workshops, mentor a beginner, or bring a project idea. Every skill level is welcome — Africa's next generation of innovators grows here."
+        },
+        {
+          "label": "Outreach",
+          "detail": "Taking AI and tech literacy beyond the hub: school visits, rural outreach and community demos across the Midlands and wider Zimbabwe."
+        }
+      ]
+    },
+    {
+      "id": "blogs",
+      "title": "Blogs",
+      "sub": "Stories from the hub",
+      "color": 10741301,
+      "pos": [
+        5.4,
+        4.8,
+        2.9
+      ],
+      "items": [
+        {
+          "label": "Launching the Gweru Hub",
+          "detail": "How the global AI movement found a home in the Midlands. Tap to read the full story.",
+          "story": {
+            "date": "March 2026",
+            "author": "Hub Team",
+            "body": [
+              "When the Young AI Leaders Community opened its call for hubs, a small group of us in Gweru saw an opening. The global AI conversation was happening everywhere except here — so we applied, we pitched, and the Midlands got its seat at the table.",
+              "The hub launched with a simple promise: AI in Gweru should be built by Gweru. Our first cohort brought together students, teachers, developers and farmers’ children — different reasons for showing up, one shared question: what can this technology do for us?",
+              "Since then the hub has grown into a community of young leaders running workshops, building prototypes and representing Zimbabwe in the global AI for Good network under the ITU.",
+              "This blog is where we tell those stories — the wins, the failed experiments and everything between. Welcome in."
+            ]
+          }
+        },
+        {
+          "label": "Teaching AI in our own languages",
+          "detail": "Why AI literacy lands differently in Shona and Ndebele. Tap to read the full story.",
+          "story": {
+            "date": "April 2026",
+            "author": "Education Team",
+            "body": [
+              "Most AI tools speak English first and everything else as an afterthought. For many learners in the Midlands, that is a wall between them and a technology that is supposed to be for everyone.",
+              "Our education team has been prototyping learning materials that teach AI concepts through Shona and Ndebele examples — datasets built from local proverbs, classification exercises drawn from the marketplace, and analogies that live where our learners live.",
+              "The early results are simple but telling: when a learner meets machine learning through the words they think in, the concept lands faster and it stays longer.",
+              "We are publishing these materials openly so other hubs across Africa can translate and adapt them. Language should be a doorway into AI, never the lock on it."
+            ]
+          }
+        },
+        {
+          "label": "Smart farming pilots in the Midlands",
+          "detail": "Low-data AI tools tested in real fields with real farmers. Tap to read the full story.",
+          "story": {
+            "date": "June 2026",
+            "author": "Projects Team",
+            "body": [
+              "Smallholder farmers around Gweru read the sky, the soil and the season with a fluency no model can match. Our question was never whether AI could replace that knowledge — it cannot — but whether it could sit usefully alongside it.",
+              "Working with agriculture students, the hub has been piloting simple, low-data tools: crop-disease image checks that run on an entry-level phone, and plain-language summaries of rainfall patterns for planning the planting window.",
+              "The pilots are small by design. Every tool is tested in the field with the farmers themselves and judged by one metric only: does it earn its place in their day?",
+              "The coming season will tell us more. We will share everything we learn — including what fails — right here on the hub blog."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "events",
+      "title": "Events",
+      "sub": "What’s on",
+      "color": 2282478,
+      "pos": [
+        -2,
+        5.2,
+        -6.2
+      ],
+      "items": [
+        {
+          "label": "Workshops & meetups",
+          "detail": "Hands-on African AI and tech literacy workshops, hackathons and community meetups hosted across Gweru — open to students and young professionals."
+        },
+        {
+          "label": "AI for Good sessions",
+          "detail": "Hub participation in the global AI for Good programme — webinars, challenges and the annual summit alongside hubs worldwide."
+        },
+        {
+          "label": "Upcoming",
+          "detail": "Follow the hub on social media for the next event announcement — or reach out through the Contact anchor to co-host one."
+        }
+      ]
+    },
+    {
+      "id": "partners",
+      "title": "Partners",
+      "sub": "Our allies",
+      "color": 9133302,
+      "pos": [
+        4.4,
+        0.7,
+        5.8
+      ],
+      "items": [
+        {
+          "label": "AI for Good · ITU",
+          "detail": "The Young AI Leaders Community operates under ITU's AI for Good initiative — connecting African youth tech hubs to a United Nations platform for global impact."
+        },
+        {
+          "label": "Local institutions",
+          "detail": "Collaborating with universities, schools and innovation spaces across Zimbabwe and Southern Africa to grow African tech capacity from the ground up."
+        },
+        {
+          "label": "Become a partner",
+          "detail": "Support youth-led, ethical AI and tech innovation in Africa — sponsor a project, host a workshop or mentor our members."
+        }
+      ]
+    }
+  ]
+}

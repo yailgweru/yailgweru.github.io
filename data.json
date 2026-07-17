@@ -6,7 +6,6 @@
       "tagline": "Gweru Hub · Zimbabwe"
     },
     "hint": "Drag to rotate · tap an anchor to focus",
-    "storyKicker": "Hub Blog",
     "seo": {
       "title": "Young AI Leaders Gweru | African Youth Tech & AI Innovation Hub",
       "h1": "African Youth Tech Hub — AI, Innovation & Social Impact from Gweru, Zimbabwe",
@@ -196,50 +195,7 @@
         4.8,
         2.9
       ],
-      "items": [
-        {
-          "label": "Launching the Gweru Hub",
-          "detail": "How the global AI movement found a home in the Midlands. Tap to read the full story.",
-          "story": {
-            "date": "March 2026",
-            "author": "Hub Team",
-            "body": [
-              "When the Young AI Leaders Community opened its call for hubs, a small group of us in Gweru saw an opening. The global AI conversation was happening everywhere except here — so we applied, we pitched, and the Midlands got its seat at the table.",
-              "The hub launched with a simple promise: AI in Gweru should be built by Gweru. Our first cohort brought together students, teachers, developers and farmers’ children — different reasons for showing up, one shared question: what can this technology do for us?",
-              "Since then the hub has grown into a community of young leaders running workshops, building prototypes and representing Zimbabwe in the global AI for Good network under the ITU.",
-              "This blog is where we tell those stories — the wins, the failed experiments and everything between. Welcome in."
-            ]
-          }
-        },
-        {
-          "label": "Teaching AI in our own languages",
-          "detail": "Why AI literacy lands differently in Shona and Ndebele. Tap to read the full story.",
-          "story": {
-            "date": "April 2026",
-            "author": "Education Team",
-            "body": [
-              "Most AI tools speak English first and everything else as an afterthought. For many learners in the Midlands, that is a wall between them and a technology that is supposed to be for everyone.",
-              "Our education team has been prototyping learning materials that teach AI concepts through Shona and Ndebele examples — datasets built from local proverbs, classification exercises drawn from the marketplace, and analogies that live where our learners live.",
-              "The early results are simple but telling: when a learner meets machine learning through the words they think in, the concept lands faster and it stays longer.",
-              "We are publishing these materials openly so other hubs across Africa can translate and adapt them. Language should be a doorway into AI, never the lock on it."
-            ]
-          }
-        },
-        {
-          "label": "Smart farming pilots in the Midlands",
-          "detail": "Low-data AI tools tested in real fields with real farmers. Tap to read the full story.",
-          "story": {
-            "date": "June 2026",
-            "author": "Projects Team",
-            "body": [
-              "Smallholder farmers around Gweru read the sky, the soil and the season with a fluency no model can match. Our question was never whether AI could replace that knowledge — it cannot — but whether it could sit usefully alongside it.",
-              "Working with agriculture students, the hub has been piloting simple, low-data tools: crop-disease image checks that run on an entry-level phone, and plain-language summaries of rainfall patterns for planning the planting window.",
-              "The pilots are small by design. Every tool is tested in the field with the farmers themselves and judged by one metric only: does it earn its place in their day?",
-              "The coming season will tell us more. We will share everything we learn — including what fails — right here on the hub blog."
-            ]
-          }
-        }
-      ]
+      "items": []
     },
     {
       "id": "events",

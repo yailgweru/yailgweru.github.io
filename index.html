@@ -144,31 +144,6 @@
     pointer-events: none;
   }
 
-  #story {
-    position: fixed; top: 0; right: 0; height: 100%;
-    width: min(430px, 94vw); z-index: 60;
-    transform: translateX(105%); transition: transform .45s cubic-bezier(.2,.8,.25,1);
-    pointer-events: none;
-  }
-  #story.open { transform: translateX(0); pointer-events: auto; }
-  .story-panel {
-    height: 100%; display: flex; flex-direction: column; position: relative; overflow: hidden;
-    background: rgba(5, 15, 23, .97); border-left: 1px solid rgba(107,232,255,.55);
-    box-shadow: -24px 0 70px rgba(0,0,0,.65); backdrop-filter: blur(12px);
-  }
-  .story-panel::before {
-    content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(107,232,255,.045) 0 1px, transparent 1px 4px);
-  }
-  .story-head { padding: 22px 54px 16px 22px; border-bottom: 1px solid rgba(107,232,255,.3); flex-shrink: 0; }
-  .story-kicker { font-size: 10px; letter-spacing: 3px; color: #6be8ff; text-transform: uppercase; margin-bottom: 8px; }
-  .story-title { font-size: 20px; font-weight: 700; color: #eaf9ff; line-height: 1.3; }
-  .story-meta { font-size: 11px; color: rgba(191,243,255,.6); margin-top: 8px; letter-spacing: .5px; }
-  .story-close { position: absolute; top: 18px; right: 16px; z-index: 2; }
-  .story-body { overflow-y: auto; padding: 18px 22px 34px; font-size: 14px; line-height: 1.78; color: rgba(222,242,250,.88); }
-  .story-body p { margin: 0 0 15px; }
-  @media (prefers-reduced-motion: reduce) { #story { transition: none; } }
-
   #loader {
     position: fixed; inset: 0; z-index: 100; background: #0a0a0a;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
@@ -192,11 +167,8 @@
     .brand .t1 { font-size: 12px; }
     .hint { font-size: 11px; padding: 7px 14px; bottom: auto; top: calc(78px + env(safe-area-inset-top)); }
     /* keep interactive controls at a comfortably tappable size on touch screens */
-    .holo-close, .story-close { width: 40px; height: 40px; font-size: 16px; }
+    .holo-close { width: 40px; height: 40px; font-size: 16px; }
     .holo-item-btn { padding: 13px 14px; min-height: 44px; }
-    #story { width: min(430px, 100vw); }
-    .story-head { padding: calc(22px + env(safe-area-inset-top)) 54px 16px 22px; }
-    .story-body { padding-bottom: calc(34px + env(safe-area-inset-bottom)); }
   }
   @media (prefers-reduced-motion: reduce) {
     #holo.open, .holo-panel::before { animation: none !important; }
@@ -233,18 +205,6 @@
   </div>
   <div class="holo-beam"></div>
 </div>
-
-<aside id="story" aria-hidden="true">
-  <div class="story-panel">
-    <button class="holo-close story-close" id="story-close" aria-label="Close story">✕</button>
-    <div class="story-head">
-      <div class="story-kicker"></div>
-      <div class="story-title" id="story-title"></div>
-      <div class="story-meta" id="story-meta"></div>
-    </div>
-    <div class="story-body" id="story-body"></div>
-  </div>
-</aside>
 
 <main id="seo-content" class="sr-only" aria-label="Young AI Leaders Gweru Hub">
   <h1>Young AI Leaders Gweru Hub — Youth AI, Tech &amp; Social Innovation in Zimbabwe</h1>
@@ -338,22 +298,6 @@ function applySeo(site, sections, logoPath) {
     }
   ];
 
-  sections.forEach(function (s) {
-    (s.items || []).forEach(function (item) {
-      if (!item.story) return;
-      graph.push({
-        '@type': 'BlogPosting',
-        headline: item.label,
-        description: item.detail,
-        author: { '@type': 'Organization', name: item.story.author },
-        datePublished: item.story.date,
-        articleBody: item.story.body.join('\n\n'),
-        publisher: { '@id': canonical + '#organization' },
-        mainEntityOfPage: canonical + '#blogs'
-      });
-    });
-  });
-
   var ldScript = document.getElementById('ld-json');
   if (!ldScript) {
     ldScript = document.createElement('script');
@@ -369,11 +313,8 @@ function applySeo(site, sections, logoPath) {
   sections.forEach(function (s) {
     html += '<section id="' + s.id + '"><h2>' + s.title + ' — ' + s.sub + '</h2><ul>';
     (s.items || []).forEach(function (item) {
-      html += '<li><h3>' + item.label + '</h3><p>' + item.detail + '</p>';
-      if (item.story) {
-        html += '<article><p>' + item.story.body.join('</p><p>') + '</p></article>';
-      }
-      html += '</li>';
+      var heading = item.link ? '<a href="' + item.link + '">' + item.label + '</a>' : item.label;
+      html += '<li><h3>' + heading + '</h3><p>' + item.detail + '</p></li>';
     });
     html += '</ul></section>';
   });
@@ -394,11 +335,27 @@ function applySeo(site, sections, logoPath) {
 
   const site = data.site;
   const SECTIONS_RAW = data.sections;
+
+  try {
+    const blogRes = await fetch('blogs/manifest.json');
+    if (blogRes.ok) {
+      const posts = await blogRes.json();
+      posts.sort(function (a, b) { return b.date.localeCompare(a.date); });
+      const blogSection = SECTIONS_RAW.find(function (s) { return s.id === 'blogs'; });
+      if (blogSection) {
+        blogSection.items = posts.map(function (p) {
+          return { label: p.title, detail: p.excerpt, link: 'blogs/' + p.slug + '.html' };
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Failed to load blogs/manifest.json', err);
+  }
+
   applySeo(site, SECTIONS_RAW, data.logo);
   document.querySelector('.brand .t1').textContent = site.brand.name;
   document.querySelector('.brand .t2').textContent = site.brand.tagline;
   document.getElementById('hint').textContent = site.hint;
-  document.querySelector('.story-kicker').textContent = site.storyKicker;
   document.getElementById('brand-logo').alt = site.brand.name + ' logo';
 
   const LOGO_URL = resolveLogo(data.logo);
@@ -777,7 +734,6 @@ function focusSection(group) {
 
 function unfocus() {
   closeHolo();
-  closeStory();
   focused = null;
   hint.classList.remove('hidden');
   tweenCamera(orbit.theta, 1.42, isMobile ? 16.5 : 13.25, new THREE.Vector3(0, 1.8, 0), 900);
@@ -792,10 +748,10 @@ function openHolo(section) {
     wrap.className = 'holo-item';
     const btn = document.createElement('button');
     btn.className = 'holo-item-btn';
-    btn.innerHTML = '<span class="dot"></span><span>' + item.label + '</span><span class="chev">' + (item.story ? '\u2192' : '\u25b6') + '</span>';
+    btn.innerHTML = '<span class="dot"></span><span>' + item.label + '</span><span class="chev">' + (item.link ? '\u2192' : '\u25b6') + '</span>';
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
-      if (item.story) { openStory(item); return; }
+      if (item.link) { location.href = item.link; return; }
       const wasOpen = wrap.classList.contains('expanded');
       holoItems.querySelectorAll('.holo-item').forEach(function (el) { el.classList.remove('expanded'); });
       if (!wasOpen) wrap.classList.add('expanded');
@@ -812,28 +768,6 @@ function openHolo(section) {
   holo.classList.add('open');
 }
 function closeHolo() { holo.classList.remove('open'); }
-
-const story = document.getElementById('story');
-function openStory(item) {
-  document.getElementById('story-title').textContent = item.label;
-  document.getElementById('story-meta').textContent = item.story.date + ' \u00b7 ' + item.story.author;
-  const body = document.getElementById('story-body');
-  body.innerHTML = '';
-  item.story.body.forEach(function (p) {
-    const el = document.createElement('p');
-    el.textContent = p;
-    body.appendChild(el);
-  });
-  body.scrollTop = 0;
-  story.classList.add('open');
-  story.setAttribute('aria-hidden', 'false');
-}
-function closeStory() {
-  story.classList.remove('open');
-  story.setAttribute('aria-hidden', 'true');
-}
-document.getElementById('story-close').addEventListener('click', closeStory);
-addEventListener('keydown', function (e) { if (e.key === 'Escape') closeStory(); });
 
 document.getElementById('holo-close').addEventListener('click', unfocus);
 document.getElementById('holo-back').addEventListener('click', unfocus);

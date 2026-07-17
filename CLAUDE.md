@@ -142,6 +142,30 @@ site. Its input and output (`blogs/*.md`, `blogs/*.html`, `assets/blogs/*`,
 carries the full history of every post; cloning fresh needs Python only if
 you're about to write a new one.
 
+## Read-more sidebar (data-driven)
+
+Any item in a `data.json` section can carry a `more` object — clicking that
+item in the 3D scene's holo panel opens the hologram side panel instead of
+the inline expander. The renderer in `index.html` is generic; all content
+is data, so adding entries never requires HTML/CSS changes:
+
+- `more.body` — array of paragraphs.
+- `more.title` / `more.kicker` / `more.meta` — header fields (kicker
+  defaults to the section title, title to the item label).
+- `more.image` — hero image path (site-root relative).
+- `more.link` — `{ "href", "label" }`, rendered as a CTA button.
+- `more.type: "team"` — renders the section's `people` block instead:
+  full-profile cards for `people.leadership` (`name`, `role`, `image`,
+  `bio` array), then a uniform two-column grid of `people.members`
+  (`name`, `role`, `image`, `brief`). A missing/empty `image` falls back
+  to an initials avatar, so people can be added before photos exist.
+
+The same content is mirrored into the hidden `#seo-content` block so it
+stays crawlable. Blog items are built at runtime from
+`blogs/manifest.json` (blogs/ stays the source of truth for posts) — their
+sidebar shows date/author, hero, excerpt and a "Read full post" link to
+the real `blogs/<slug>.html` page.
+
 ## Assets
 
 - **Favicon** (`assets/favicon/`): a full set generated from

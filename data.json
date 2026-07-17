@@ -144,7 +144,7 @@
       "items": [
         {
           "label": "Hub leadership",
-          "detail": "Led by young Zimbabwean AI leaders including Brandon T. Bande and Andrea Nokwanda Bule — driving Africa-facing tech innovation from Gweru, 2025–2027.",
+          "detail": "Led by Brandon T. Bande with an organising team and impact leadership driving Africa-facing tech innovation from Gweru, 2025–2027.",
           "more": {
             "people": "leadership",
             "title": "Hub leadership"
@@ -170,31 +170,58 @@
             "role": "Hub Leader",
             "image": "",
             "bio": [
-              "Co-leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province."
-            ]
+              "Leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province."
+            ],
+            "linkedin": "",
+            "site": ""
           },
           {
-            "name": "Andrea Nokwanda Bule",
-            "role": "Hub Leader",
+            "name": "Linda Mapindlo",
+            "role": "Organising Team",
             "image": "",
             "bio": [
-              "Co-leads the Young AI Leaders Gweru Hub (2025–2027 cohort), championing youth-led, community-first technology across Zimbabwe."
-            ]
+              "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
+            ],
+            "linkedin": "",
+            "site": ""
+          },
+          {
+            "name": "Webnergy Simango",
+            "role": "Organising Team",
+            "image": "",
+            "bio": [
+              "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
+            ],
+            "linkedin": "",
+            "site": ""
+          },
+          {
+            "name": "Mukudzeishe Primrose Tarugarira",
+            "role": "Impact Leader",
+            "image": "",
+            "bio": [
+              "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru."
+            ],
+            "linkedin": "",
+            "site": ""
           }
         ],
         "members": [
-          {
-            "name": "Member Name (placeholder)",
-            "role": "Role · Focus area",
-            "image": "",
-            "brief": "Replace with the member's name, role and one-line profile in data.json — this card is a template."
-          },
-          {
-            "name": "Member Name (placeholder)",
-            "role": "Role · Focus area",
-            "image": "",
-            "brief": "Add as many members as needed — the grid grows automatically, two per row."
-          }
+          { "name": "Tanaka Moyo (test)", "role": "Software Engineering", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Rufaro Chikara (test)", "role": "Data Science", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Tapiwa Ndlovu (test)", "role": "AI Literacy · Education", "image": "", "brief": "Filler profile testing a slightly longer one-line bio to check how the card handles wrapping text." },
+          { "name": "Farai Sibanda (test)", "role": "Community Outreach", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Chiedza Gumbo (test)", "role": "Product Design", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Tinashe Dube (test)", "role": "Agri-Tech", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Nyasha Marufu (test)", "role": "Backend Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Kudzai Mutasa (test)", "role": "Research", "image": "", "brief": "A filler bio that runs a little longer than the rest, to test the three-line clamp on the member card." },
+          { "name": "Simbarashe Chirwa (test)", "role": "Frontend Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Vimbai Machingauta (test)", "role": "Partnerships", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Blessing Nyathi (test)", "role": "Mobile Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Panashe Gwiriri (test)", "role": "Machine Learning", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Anesu Chitiyo (test)", "role": "Events & Logistics", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Tadiwa Chatiza (test)", "role": "UI/UX Design", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
+          { "name": "Ropafadzo Zulu (test)", "role": "Cloud & DevOps", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." }
         ]
       }
     },
@@ -272,36 +299,65 @@
       ],
       "items": [
         {
-          "label": "Workshops & meetups",
-          "detail": "Hands-on African AI and tech literacy workshops, hackathons and community meetups hosted across Gweru — open to students and young professionals.",
+          "label": "Build with AI Buildathon · Southern Africa Jam",
+          "detail": "Thu, Apr 30 · Midlands State University, Gweru — a satellite session of the regional AI buildathon.",
           "more": {
+            "meta": "Thu, Apr 30 · Midlands State University Main Campus, Room 59, Gweru",
+            "image": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,anim=false,background=white,quality=75,width=640,height=360/event-covers/zt/c021127c-f5f8-41ff-b00b-16199a70df64.jpg",
             "body": [
-              "Hands-on AI and tech literacy workshops, hackathons and community meetups hosted across Gweru — open to students, young professionals and the simply curious.",
-              "Sessions are practical by design: bring a laptop or just a phone, and leave having built something real.",
-              "Announcements go out on the hub's social channels — follow along, or reach out through the Contact anchor to suggest a topic."
-            ]
+              "A satellite session of the regional Build with AI Buildathon, run with Data Science MSU — connect, learn and build alongside fellow innovators.",
+              "Open to beginners and experienced developers alike: a collaborative hacking session focused on AI-powered solutions, teamwork and problem-solving.",
+              "Brings together the Young AI Leaders and Data Science MSU communities to grow innovation, networking and skills in Gweru."
+            ],
+            "link": { "href": "https://luma.com/chg80xvi", "label": "View on Luma →" }
           }
         },
         {
-          "label": "AI for Good sessions",
-          "detail": "Hub participation in the global AI for Good programme — webinars, challenges and the annual summit alongside hubs worldwide.",
+          "label": "From Prompt to Production",
+          "detail": "Sat, Apr 25 · American Corner, Gweru — building applications with no-code, using Google AI Studio.",
           "more": {
+            "meta": "Sat, Apr 25, 9:00 AM · American Corner, Gweru",
+            "image": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,anim=false,background=white,quality=75,width=640,height=360/event-covers/yy/92e7ac20-1098-4c71-8479-83d18228535e.jpg",
             "body": [
-              "As a hub of the Young AI Leaders Community under ITU's AI for Good initiative, Gweru takes part in the global programme of webinars, challenges and the annual summit.",
-              "These sessions connect our members with hubs and innovators worldwide — Zimbabwean voices in a global conversation about what AI should be for.",
-              "Participation is open to hub members — join the hub to take part."
-            ]
+              "A hands-on workshop on moving from idea to execution — turning simple prompts into fully functional applications with Google AI Studio, no coding required.",
+              "Covers writing effective prompts, using AI to generate application logic, and building and testing a working app end to end.",
+              "Open to students, entrepreneurs, professionals and anyone curious about AI, innovation or digital product creation — just bring a laptop."
+            ],
+            "link": { "href": "https://luma.com/9dl4ywcf", "label": "View on Luma →" }
           }
         },
         {
-          "label": "Upcoming",
-          "detail": "Follow the hub on social media for the next event announcement — or reach out through the Contact anchor to co-host one.",
+          "label": "Prompting Like A Pro",
+          "detail": "Sat, Feb 28 · American Corner, Gweru — the second session in the hub's AI Literacy series.",
           "more": {
+            "meta": "Sat, Feb 28, 10:00 AM · American Corner, Gweru",
+            "image": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,anim=false,background=white,quality=75,width=640,height=360/event-covers/ys/a966cf5b-b859-4c25-8392-2fda70f2d9b3.jpg",
             "body": [
-              "The next event is always announced on the hub's social channels first — follow the Gweru Hub on LinkedIn, X and Instagram to catch it.",
-              "Want to co-host a workshop, demo or meetup? Reach out through the Contact anchor — we are always open to partners and venues."
-            ]
+              "The second session in the hub's AI Literacy series, focused squarely on prompt engineering for generative AI.",
+              "After the first session covered inputs, outputs and the GIGO principle, this one dug into crafting effective prompts and instructing AI systems on the task at hand.",
+              "Held at American Corner in Gweru, with 23 attendees."
+            ],
+            "link": { "href": "https://luma.com/hygxh9vr", "label": "View on Luma →" }
           }
+        },
+        {
+          "label": "Understanding AI Beyond the Hype",
+          "detail": "Feb 11 · Online via Zoom — the opening session of a six-part AI Literacy series.",
+          "more": {
+            "meta": "Feb 11 · Zoom (online)",
+            "image": "https://images.lumacdn.com/cdn-cgi/image/format=auto,fit=cover,dpr=2,anim=false,background=white,quality=75,width=640,height=360/calendar-cover-images/kz/0494a2e9-db28-4bed-942e-9a6e0fd4e320.jpg",
+            "body": [
+              "The inaugural session of a six-part AI Literacy series, developed with American Space Gweru to demystify AI for general audiences.",
+              "A practical, no-jargon look at data, algorithms and machine learning — how they show up in apps and platforms people already use.",
+              "Set the foundation for the rest of the series, no technical background required."
+            ],
+            "link": { "href": "https://luma.com/umbzgb89", "label": "View on Luma →" }
+          }
+        },
+        {
+          "label": "All events on Luma",
+          "detail": "Every hub event, past and upcoming, is listed on our Luma calendar — follow it to catch the next one.",
+          "link": "https://luma.com/user/yailgweru"
         }
       ]
     },

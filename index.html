@@ -215,6 +215,15 @@
     font-size: 11.5px; line-height: 1.55; color: rgba(222,242,250,.72);
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
+  .social-row { display: flex; gap: 8px; margin-top: 10px; }
+  .member .social-row { justify-content: center; margin-top: 8px; }
+  .social-row a {
+    display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 6px;
+    border: 1px solid rgba(107,232,255,.4); background: rgba(107,232,255,.08);
+  }
+  .social-row a:hover { background: rgba(107,232,255,.2); }
+  .social-row img { width: 14px; height: 14px; display: block; }
   @media (prefers-reduced-motion: reduce) { #side { transition: none; } }
 
   #loader {
@@ -306,6 +315,10 @@
 function resolveLogo(logo) {
   if (logo.startsWith('data:') || /^https?:\/\//.test(logo) || logo.startsWith('assets/') || logo.startsWith('/')) return logo;
   return 'data:image/png;base64,' + logo;
+}
+
+function isExternal(url) {
+  return /^https?:\/\//.test(url) && !url.startsWith(location.origin);
 }
 
 function absoluteUrl(path) {
@@ -871,7 +884,7 @@ function openHolo(section) {
     btn.addEventListener('click', function (e) {
       e.stopPropagation();
       if (item.more) { openSide(section, item); return; }
-      if (item.link) { location.href = item.link; return; }
+      if (item.link) { if (isExternal(item.link)) window.open(item.link, '_blank', 'noopener'); else location.href = item.link; return; }
       const wasOpen = wrap.classList.contains('expanded');
       holoItems.querySelectorAll('.holo-item').forEach(function (el) { el.classList.remove('expanded'); });
       if (!wasOpen) wrap.classList.add('expanded');
@@ -905,6 +918,28 @@ function makePhoto(person) {
   av.className = 'avatar';
   av.textContent = (person.name || '?').trim().split(/\s+/).map(function (w) { return w[0]; }).slice(0, 2).join('').toUpperCase();
   return av;
+}
+
+function makeSocialRow(person) {
+  const links = [];
+  if (person.linkedin) links.push({ href: person.linkedin, icon: 'assets/icons/linkedin.svg', label: 'LinkedIn' });
+  if (person.site) links.push({ href: person.site, icon: 'assets/icons/website.svg', label: 'Website' });
+  if (!links.length) return null;
+  const row = document.createElement('div');
+  row.className = 'social-row';
+  links.forEach(function (l) {
+    const a = document.createElement('a');
+    a.href = l.href;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.setAttribute('aria-label', l.label + ' — ' + (person.name || ''));
+    const img = document.createElement('img');
+    img.src = l.icon;
+    img.alt = '';
+    a.appendChild(img);
+    row.appendChild(a);
+  });
+  return row;
 }
 
 function addSideLabel(text) {
@@ -988,6 +1023,8 @@ function openSide(section, item) {
         bio.appendChild(para);
       });
       info.appendChild(bio);
+      const social = makeSocialRow(p);
+      if (social) info.appendChild(social);
       card.appendChild(info);
       sideBody.appendChild(card);
     });
@@ -1016,6 +1053,8 @@ function openSide(section, item) {
         brief.textContent = m.brief;
         card.appendChild(brief);
       }
+      const social = makeSocialRow(m);
+      if (social) card.appendChild(social);
       grid.appendChild(card);
     });
     sideBody.appendChild(grid);
@@ -1046,6 +1085,7 @@ function openSide(section, item) {
     a.className = 'side-link';
     a.href = more.link.href;
     a.textContent = more.link.label || 'Read more →';
+    if (isExternal(more.link.href)) { a.target = '_blank'; a.rel = 'noopener'; }
     sideBody.appendChild(a);
   }
 

@@ -161,9 +161,19 @@ is data, so adding entries never requires HTML/CSS changes:
 - `more.people: "leadership" | "members" | "all"` — renders from the
   section's `people` block: `leadership` as full-profile cards (`name`,
   `role`, `image`, `bio` array), `members` as a uniform two-column grid
-  (`name`, `role`, `image`, `brief`), `all` as both. A missing/empty
+  (`name`, `role`, `image`, `brief`), `all` as both, with a section label
+  above each group only when both are shown together. A missing/empty
   `image` falls back to an initials avatar, so people can be added before
-  photos exist.
+  photos exist. Each person can also carry `linkedin` and/or `site` (full
+  URLs) — any that are set render as a small icon-link row on their card
+  (icons from `assets/icons/`); leave both blank to show no row.
+
+Links are external-aware: `item.link` / `more.link.href` pointing off-site
+open in a new tab (`target="_blank" rel="noopener"`); same-origin links
+(e.g. `blogs/<slug>.html`) navigate normally. Use this for anything that
+points off the site, like an item whose `more` is omitted and `link` is
+just an external URL string (e.g. the Events section's "All events on
+Luma" item, which points at the hub's Luma calendar).
 
 The same content is mirrored into the hidden `#seo-content` block so it
 stays crawlable.
@@ -174,6 +184,13 @@ stays crawlable.
 `#team/hub-leadership`, `#blogs/<post-slug>`). Item slugs are derived from
 the label (lowercased, hyphenated); blog items use the post slug. The URL
 hash updates as panels open/close, so any view can be shared as a link.
+
+**Events**: unlike blogs, event items are hand-maintained in `data.json`
+(no live sync with Luma) — each carries `more.meta` (date · location),
+`more.image` (hotlinked Luma cover image), `more.body`, and
+`more.link` to the event's own `https://luma.com/<slug>` page. When
+adding/updating events, pull details from
+`https://luma.com/user/yailgweru`.
 
 **Blogs in the sidebar**: blog items are built at runtime from
 `blogs/manifest.json` and the panel is the reading experience — it fetches
@@ -203,6 +220,11 @@ deep links.
 - **Blog images** (`assets/blogs/<slug>/`): populated automatically by
   `publish_blog.py` — don't add images here by hand, add them to the
   markdown draft instead so the manifest/OG tags stay correct.
+- **Icons** (`assets/icons/`): small inline-style SVGs used by the
+  hologram sidebar (currently `linkedin.svg`, `website.svg` for the social
+  row on team profile/member cards). Hand-authored, not generated — keep
+  new ones in the same minimal single-color style (`#6be8ff` stroke/fill,
+  24×24 viewBox).
 
 ## SEO
 

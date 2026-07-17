@@ -1,16 +1,18 @@
 #!/usr/bin/env python3
 """
-Publish a markdown draft (submissions/<slug>.md) as a static blog post
+Publish a markdown draft (blogs/<slug>.md) as a static blog post
 (blogs/<slug>.html), wiring up its images, manifest entry and sitemap entry.
 
-This script is intentionally NOT committed to the repo (see .gitignore) —
-only its output (blogs/*.html, assets/blogs/*, blogs/manifest.json,
-sitemap.xml) is. See docs/structure.md for the full pipeline contract and
-CLAUDE.md for the authoring workflow.
+This script itself is gitignored and stays local — only needed to author a
+new post. Its input (blogs/*.md) and output (blogs/*.html, assets/blogs/*,
+blogs/manifest.json, sitemap.xml) are all committed, so blogs/ is the
+complete source of truth for every post, source and compiled alike. See
+docs/structure.md for the full pipeline contract and CLAUDE.md for the
+authoring workflow.
 
 Usage:
-    python scripts/publish_blog.py submissions/teaching-ai-in-our-own-languages.md
-    python scripts/publish_blog.py submissions/*.md   (shell-expanded, publishes each)
+    python scripts/publish_blog.py blogs/teaching-ai-in-our-own-languages.md
+    python scripts/publish_blog.py blogs/*.md   (shell-expanded, publishes each)
 
 Requires: PyYAML, Markdown  (pip install pyyaml markdown)
 """
@@ -212,7 +214,7 @@ def publish(md_path):
     print("Updated: blogs/manifest.json, sitemap.xml")
     title = meta["title"]
     print("\nNext: review the output, then commit —")
-    print(f'  git add blogs/{slug}.html assets/blogs/{slug} blogs/manifest.json sitemap.xml')
+    print(f'  git add {md_path.relative_to(ROOT)} blogs/{slug}.html assets/blogs/{slug} blogs/manifest.json sitemap.xml')
     print(f'  git commit -m "Add blog post: {title}"')
 
 

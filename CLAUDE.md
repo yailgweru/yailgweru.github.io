@@ -31,12 +31,13 @@ assets/
   fonts/                     # self-hosted fonts live here if/when added (committed)
   blogs/<slug>/               # hero + inline images per blog post (committed)
 
-blogs/
+blogs/                     # the single source of truth for all blog content
   index.html                # blog listing page, renders from manifest.json (committed)
   manifest.json               # generated metadata index of published posts (committed)
-  <slug>.html                  # one static HTML file per published post (committed)
+  <slug>.md                    # markdown source for a published post (committed)
+  <slug>.html                  # compiled static HTML for that post (committed)
+  images/                     # raw source images referenced by <slug>.md drafts (committed)
 
-submissions/               # GITIGNORED — raw markdown drafts, not committed
 scripts/
   publish_blog.py             # GITIGNORED — the markdown -> HTML publish pipeline
   _blog_template.html          # committed — the HTML shell the script fills in
@@ -65,15 +66,17 @@ git commit -m "<concise, why-focused message>"
 Prefer staging specific paths over `git add -A`/`git add .` when the
 change set is broad, so nothing unintended (stray local files, generated
 junk) gets swept in — check `git status` before committing broad changes.
-Never commit anything under `submissions/` or `scripts/publish_blog.py` —
-they're gitignored for a reason (see below).
+Never commit `scripts/publish_blog.py` — it's gitignored for a reason (see
+below).
 
 ## Blogs — how content actually gets published
 
-**Every blog post that ships is a plain `.html` file under `blogs/`.**
-Nothing markdown ever reaches the deployed site — markdown is only the
-authoring format for drafts, which are converted to static HTML before
-they're committed.
+**`blogs/` is the single source of truth for blog content — both the
+markdown source and its compiled output live there, committed.** Readers
+and crawlers are only ever served the compiled `.html` file for a post;
+the sibling `.md` is the versioned authoring source, not a page anyone
+navigates to (it's not linked from anywhere, and it's not in
+`sitemap.xml`).
 
 ### Why HTML output instead of client-side markdown rendering
 
@@ -85,7 +88,7 @@ from the reader but an HTTP GET.
 
 ### Authoring flow
 
-1. Write the draft as `submissions/<slug>.md` with YAML frontmatter:
+1. Write the draft as `blogs/<slug>.md` with YAML frontmatter:
 
    ```markdown
    ---
@@ -93,7 +96,7 @@ from the reader but an HTTP GET.
    date: 2026-04-12
    topics: [Education, AI Literacy]
    tags: [shona, ndebele, ai-literacy, education]
-   image: hero.jpg          # path relative to the draft; becomes the post's hero + OG image
+   image: images/hero.jpg   # path relative to the draft; becomes the post's hero + OG image
    author: Education Team
    excerpt: Why AI literacy lands differently in Shona and Ndebele.
    ---
@@ -104,12 +107,15 @@ from the reader but an HTTP GET.
 
    Required fields: `title`, `date` (YYYY-MM-DD), `topics`, `tags`,
    `image`. A post is not considered complete without at least one image.
+   Put source images referenced by drafts in `blogs/images/` (distinct
+   from `assets/blogs/<slug>/`, which holds the copies the compiled page
+   actually serves).
 
 2. Run the publish script (gitignored, local-only — install deps once
    with `pip install pyyaml markdown`):
 
    ```
-   python scripts/publish_blog.py submissions/<slug>.md
+   python scripts/publish_blog.py blogs/<slug>.md
    ```
 
    This renders `blogs/<slug>.html` from `scripts/_blog_template.html`,
@@ -117,23 +123,24 @@ from the reader but an HTTP GET.
    updates `blogs/manifest.json` (which `blogs/index.html` reads to render
    the listing grid), and appends a `<url>` entry to `sitemap.xml`.
 
-3. Review the generated `blogs/<slug>.html`, then commit the *output*
-   only:
+3. Review the generated `blogs/<slug>.html`, then commit source *and*
+   output together:
 
    ```
-   git add blogs/<slug>.html assets/blogs/<slug> blogs/manifest.json sitemap.xml
+   git add blogs/<slug>.md blogs/<slug>.html assets/blogs/<slug> blogs/manifest.json sitemap.xml
    git commit -m "Add blog post: <title>"
    ```
 
    The script prints this exact command at the end of a successful run.
 
-### Why `submissions/` and `scripts/publish_blog.py` are gitignored
+### Why `scripts/publish_blog.py` is gitignored
 
-Deliberate: raw drafts and the conversion tool are local working files,
-not site content. Cloning this repo fresh gets every published post as
-plain HTML immediately — no Python, no dependencies, nothing to run just
-to view or deploy the site. Python + the script are only needed to author
-a *new* post.
+The conversion tool is a local working file, not site content — it's only
+needed to author a *new* post, never to view or deploy the already-published
+site. Its input and output (`blogs/*.md`, `blogs/*.html`, `assets/blogs/*`,
+`blogs/manifest.json`, `sitemap.xml`) are all committed, so `blogs/` alone
+carries the full history of every post; cloning fresh needs Python only if
+you're about to write a new one.
 
 ## Assets
 
@@ -193,7 +200,7 @@ a *new* post.
 
 - Don't hardcode copy into `index.html` — it belongs in `data.json`.
 - Don't hand-write a `blogs/<slug>.html` file — always go through
-  `submissions/*.md` + `publish_blog.py` so metadata, images, the
+  `blogs/<slug>.md` + `publish_blog.py` so metadata, images, the
   manifest, and the sitemap stay consistent.
 - Don't add a build step, framework, or package.json unless there's a
   concrete reason — the zero-build-step property is intentional.

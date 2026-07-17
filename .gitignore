@@ -1,8 +1,8 @@
 # Internal docs — architecture/structure notes for local reference only
 docs/
 
-# Blog submission pipeline — raw drafts and the converter script stay local
-submissions/
+# Blog publish pipeline — the converter script stays local; markdown drafts
+# and their compiled output both live committed under blogs/
 scripts/publish_blog.py
 scripts/__pycache__/
 

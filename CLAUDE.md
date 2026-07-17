@@ -14,9 +14,19 @@ single source of truth for site copy, SEO metadata, and the 3D anchor
 layout** — `index.html` has no hardcoded copy. Most content edits (mission
 text, team bios, adding a section) only touch `data.json`.
 
-There is no bundler, no `node_modules`, no build step. Anyone should be
-able to open `index.html` directly or serve the folder with any static
-file server.
+There is no bundler, no `node_modules`, no build step — but `index.html`
+loads its content with `fetch()` (`data.json`, `blogs/manifest.json`, and
+per-post HTML for the read-more sidebar), and browsers block `fetch()`
+under the `file://` origin. **Double-clicking `index.html` will not
+work** — it fails silently with CORS errors on every fetch. Serve the
+repo root with any static file server instead, e.g.:
+
+```
+python -m http.server 8000    # then open http://localhost:8000/
+```
+
+Any other static server (`npx serve`, VS Code Live Server, etc.) works
+the same way — the only requirement is `http://`/`https://`, not `file://`.
 
 ## Repo layout
 

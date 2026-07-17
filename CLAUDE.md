@@ -154,17 +154,34 @@ is data, so adding entries never requires HTML/CSS changes:
   defaults to the section title, title to the item label).
 - `more.image` — hero image path (site-root relative).
 - `more.link` — `{ "href", "label" }`, rendered as a CTA button.
-- `more.type: "team"` — renders the section's `people` block instead:
-  full-profile cards for `people.leadership` (`name`, `role`, `image`,
-  `bio` array), then a uniform two-column grid of `people.members`
-  (`name`, `role`, `image`, `brief`). A missing/empty `image` falls back
-  to an initials avatar, so people can be added before photos exist.
+- `more.fetch` — URL of an HTML page to pull content from at open time:
+  its `.content` block is extracted and rendered in the panel (used by
+  blog items; `more.fallback` text + a link to the page show if the fetch
+  fails).
+- `more.people: "leadership" | "members" | "all"` — renders from the
+  section's `people` block: `leadership` as full-profile cards (`name`,
+  `role`, `image`, `bio` array), `members` as a uniform two-column grid
+  (`name`, `role`, `image`, `brief`), `all` as both. A missing/empty
+  `image` falls back to an initials avatar, so people can be added before
+  photos exist.
 
 The same content is mirrored into the hidden `#seo-content` block so it
-stays crawlable. Blog items are built at runtime from
-`blogs/manifest.json` (blogs/ stays the source of truth for posts) — their
-sidebar shows date/author, hero, excerpt and a "Read full post" link to
-the real `blogs/<slug>.html` page.
+stays crawlable.
+
+**Deep links**: every focused section and open panel is addressable —
+`#<sectionId>` focuses that anchor (e.g. `#team`), and
+`#<sectionId>/<item-slug>` also opens the item's panel (e.g.
+`#team/hub-leadership`, `#blogs/<post-slug>`). Item slugs are derived from
+the label (lowercased, hyphenated); blog items use the post slug. The URL
+hash updates as panels open/close, so any view can be shared as a link.
+
+**Blogs in the sidebar**: blog items are built at runtime from
+`blogs/manifest.json` and the panel is the reading experience — it fetches
+the full article body from the post's own `blogs/<slug>.html` (single
+source of truth, no duplication). The static post pages still exist as the
+crawlable/canonical copies and as a no-JS fallback; user-facing links (the
+blog listing cards, post-page back links) point at the `#blogs/<slug>`
+deep links.
 
 ## Assets
 

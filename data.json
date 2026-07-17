@@ -146,16 +146,16 @@
           "label": "Hub leadership",
           "detail": "Led by young Zimbabwean AI leaders including Brandon T. Bande and Andrea Nokwanda Bule — driving Africa-facing tech innovation from Gweru, 2025–2027.",
           "more": {
-            "type": "team",
-            "title": "Meet the team"
+            "people": "leadership",
+            "title": "Hub leadership"
           }
         },
         {
           "label": "Our members",
           "detail": "Up to 50 passionate African youth in tech — students, developers, researchers and change-makers — each committed to at least one community impact project per year.",
           "more": {
-            "type": "team",
-            "title": "Meet the team"
+            "people": "members",
+            "title": "Official members"
           }
         },
         {

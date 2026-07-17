@@ -52,7 +52,7 @@ fetch('manifest.json').then(function (r) { return r.json(); }).then(function (po
   if (!posts.length) { grid.innerHTML = '<p class="empty">No posts yet — check back soon.</p>'; return; }
   grid.innerHTML = posts.map(function (p) {
     var tags = (p.tags || []).slice(0, 3).map(function (t) { return '#' + t; }).join(' ');
-    return '<a class="card" href="' + p.slug + '.html">' +
+    return '<a class="card" href="../#blogs/' + p.slug + '">' +
       '<img src="' + p.image + '" alt="' + p.title + '" loading="lazy">' +
       '<div class="card-body"><h2>' + p.title + '</h2><p>' + p.excerpt + '</p>' +
       '<div class="meta">' + p.date + (tags ? ' &middot; ' + tags : '') + '</div></div></a>';

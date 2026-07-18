@@ -1,19 +1,5 @@
 [
   {
-    "slug": "test",
-    "title": "Test",
-    "date": "2026-07-17",
-    "author": "Hub Team",
-    "topics": [
-      "Test"
-    ],
-    "tags": [
-      "test"
-    ],
-    "image": "assets/blogs/test/launch-hero.jpg",
-    "excerpt": "Smoke-test post for the publish pipeline."
-  },
-  {
     "slug": "launching-the-gweru-hub",
     "title": "Launching the Gweru Hub",
     "date": "2026-03-01",

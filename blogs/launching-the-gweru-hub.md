@@ -5,6 +5,7 @@ topics: [Community, AI for Good]
 tags: [launch, gweru, ai-for-good, community]
 image: images/launch-hero.jpg
 author: Hub Team
+featured: true
 excerpt: How the global AI movement found a home in the Midlands.
 ---
 

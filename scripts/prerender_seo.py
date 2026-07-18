@@ -99,16 +99,18 @@ def build_head_block(site):
         f'<meta property="og:title" content="{escape(title, quote=True)}">',
         f'<meta property="og:description" content="{escape(description, quote=True)}">',
         f'<meta property="og:image" content="{escape(image, quote=True)}">',
+        f'<meta property="og:image:alt" content="{escape(seo.get("ogImageAlt", ""), quote=True)}">' if seo.get("ogImageAlt") else None,
         f'<meta property="og:locale" content="{escape(seo.get("locale", "en_ZW"), quote=True)}">',
         f'<meta property="og:site_name" content="{escape(site_name, quote=True)}">',
         '<meta name="twitter:card" content="summary_large_image">',
         f'<meta name="twitter:title" content="{escape(title, quote=True)}">',
         f'<meta name="twitter:description" content="{escape(description, quote=True)}">',
         f'<meta name="twitter:image" content="{escape(image, quote=True)}">',
+        f'<meta name="twitter:image:alt" content="{escape(seo.get("ogImageAlt", ""), quote=True)}">' if seo.get("ogImageAlt") else None,
     ]
     if seo.get("twitterHandle"):
         lines.append(f'<meta name="twitter:site" content="{escape(seo["twitterHandle"], quote=True)}">')
-    return "\n".join(lines)
+    return "\n".join(l for l in lines if l)
 
 
 def build_jsonld_block(site):
@@ -213,7 +215,11 @@ def build_blog_grid(manifest):
     cards = []
     for p in posts:
         tags = " ".join("#" + t for t in (p.get("tags") or [])[:3])
-        meta = p["date"] + (f" &middot; {escape(tags)}" if tags else "")
+        meta = p["date"]
+        if p.get("author"):
+            meta += f" &middot; by {escape(p['author'])}"
+        if tags:
+            meta += f" &middot; {escape(tags)}"
         cards.append(
             f'<a class="card" href="{escape(p["slug"], quote=True)}.html" data-slug="{escape(p["slug"], quote=True)}">'
             f'<img src="../{escape(p["image"], quote=True)}" alt="{escape(p["title"], quote=True)}" loading="lazy">'

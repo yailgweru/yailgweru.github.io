@@ -79,7 +79,7 @@ assets/
   blogs/<slug>/               # hero + inline images per blog post (committed)
 
 blogs/                     # the single source of truth for all blog content
-  index.html                # blog listing page — static cards prerendered by prerender_seo.py, JS refresh (committed)
+  index.html                # blog listing — static cards prerendered by prerender_seo.py; JS adds search, Latest/Top filters and author chips (committed)
   manifest.json               # generated metadata index of published posts (committed)
   <slug>.md                    # markdown source for a published post (committed)
   <slug>.html                  # compiled static HTML for that post (committed)
@@ -148,6 +148,7 @@ from the reader but an HTTP GET.
    tags: [shona, ndebele, ai-literacy, education]
    image: images/hero.jpg   # path relative to the draft; becomes the post's hero + OG image
    authors: [Tariro M., Brandon T. Bande]   # 1 or 2 names; or `author: Name` for one
+   featured: true   # optional — marks the post as a "Top story" on the blog listing
    excerpt: Why AI literacy lands differently in Shona and Ndebele.
    ---
 
@@ -161,7 +162,15 @@ from the reader but an HTTP GET.
    authors are joined as "A & B" for the byline/meta, and each gets their
    own `article:author` tag and JSON-LD author node (named people become
    `Person`; house bylines ending in "Team" stay `Organization`). A post
-   is not considered complete without at least one image.
+   is not considered complete without at least one image. The compiled
+   page's share image (`og:image`/`twitter:image`/JSON-LD, with alt text)
+   is **always the hub logo** for brand consistency — the frontmatter
+   `image` is only the on-page hero and the listing-card thumbnail. Every
+   compiled post ends with a standing disclaimer (baked into
+   `scripts/_blog_template.html`, inside `.content` so the hologram
+   reading panel shows it too): the views are the author(s)' own, not
+   necessarily the Hub's; the Hub permits sharing of thoughts as long as
+   they are not discriminatory.
    Put source images referenced by drafts in `blogs/images/` (distinct
    from `assets/blogs/<slug>/`, which holds the copies the compiled page
    actually serves).

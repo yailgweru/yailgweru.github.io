@@ -147,7 +147,7 @@ from the reader but an HTTP GET.
    topics: [Education, AI Literacy]
    tags: [shona, ndebele, ai-literacy, education]
    image: images/hero.jpg   # path relative to the draft; becomes the post's hero + OG image
-   author: Education Team
+   authors: [Tariro M., Brandon T. Bande]   # 1 or 2 names; or `author: Name` for one
    excerpt: Why AI literacy lands differently in Shona and Ndebele.
    ---
 
@@ -156,7 +156,12 @@ from the reader but an HTTP GET.
    ```
 
    Required fields: `title`, `date` (YYYY-MM-DD), `topics`, `tags`,
-   `image`. A post is not considered complete without at least one image.
+   `image`, and an author line — **every post has 1 or 2 authors, never
+   more**: `authors: [Name1, Name2]` (or `author: Name` for one). Two
+   authors are joined as "A & B" for the byline/meta, and each gets their
+   own `article:author` tag and JSON-LD author node (named people become
+   `Person`; house bylines ending in "Team" stay `Organization`). A post
+   is not considered complete without at least one image.
    Put source images referenced by drafts in `blogs/images/` (distinct
    from `assets/blogs/<slug>/`, which holds the copies the compiled page
    actually serves).

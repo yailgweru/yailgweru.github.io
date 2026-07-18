@@ -60,8 +60,20 @@ def parse_frontmatter(md_path):
         raise ValueError(f"{md_path} frontmatter is missing required field(s): {', '.join(missing)}")
 
     meta["slug"] = slugify(str(meta.get("slug") or meta["title"]))
-    meta.setdefault("author", "Hub Team")
     meta.setdefault("excerpt", "")
+
+    # Posts carry 1 or 2 authors: either `authors: [A, B]` or `author: A`
+    # (a string also splits on '&' / ',' / ' and ').
+    authors = meta.get("authors") or meta.get("author")
+    if not authors:
+        raise ValueError(f"{md_path} frontmatter needs `author:` or `authors:` (1 or 2 names).")
+    if isinstance(authors, str):
+        authors = [a.strip() for a in re.split(r"\s*(?:&|,|\band\b)\s*", authors) if a.strip()]
+    if not 1 <= len(authors) <= 2:
+        raise ValueError(f"{md_path}: posts have 1 or 2 authors, got {len(authors)}: {authors}")
+    meta["authors"] = authors
+    meta["author"] = " & ".join(authors)
+
     if isinstance(meta["tags"], str):
         meta["tags"] = [t.strip() for t in meta["tags"].split(",") if t.strip()]
     if isinstance(meta["topics"], str):
@@ -117,11 +129,33 @@ def localize_images(body, meta, draft_dir, out_img_dir):
             hero_rel = f"../assets/blogs/{meta['slug']}/{src_path.name}"
         hero_abs = f"{SITE_ROOT}/{hero_rel.replace('../', '')}"
     meta["image_rel"] = hero_rel
-    meta["image_abs"] = hero_abs
+    # Share image (og:image / twitter:image / JSON-LD) is always the hub logo
+    # for brand consistency; the per-post hero only appears on the page itself.
+    meta["image_abs"] = f"{SITE_ROOT}/assets/logo.png"
     return new_body
 
 
+def dedupe_keywords(meta):
+    """tags + topics, dropping case/punctuation variants of the same term
+    (e.g. 'ai-for-good' vs 'AI for Good') — keeps the first occurrence."""
+    seen = set()
+    result = []
+    for t in meta["tags"] + meta["topics"]:
+        key = re.sub(r"[^a-z0-9]", "", t.lower())
+        if key not in seen:
+            seen.add(key)
+            result.append(t)
+    return result
+
+
+def author_node(name):
+    # Named people are Person; house bylines like 'Hub Team' stay Organization.
+    kind = "Organization" if name.endswith("Team") else "Person"
+    return {"@type": kind, "name": name}
+
+
 def build_json_ld(meta, canonical):
+    author_nodes = [author_node(a) for a in meta["authors"]]
     graph = {
         "@context": "https://schema.org",
         "@type": "BlogPosting",
@@ -129,13 +163,13 @@ def build_json_ld(meta, canonical):
         "description": meta["excerpt"],
         "image": meta["image_abs"],
         "datePublished": meta["date_obj"].strftime("%Y-%m-%d"),
-        "author": {"@type": "Organization", "name": meta["author"]},
+        "author": author_nodes[0] if len(author_nodes) == 1 else author_nodes,
         "publisher": {
             "@type": "Organization",
             "name": "Young AI Leaders — Gweru Hub",
             "logo": {"@type": "ImageObject", "url": f"{SITE_ROOT}/assets/logo.png"},
         },
-        "keywords": ", ".join(meta["tags"] + meta["topics"]),
+        "keywords": ", ".join(dedupe_keywords(meta)),
         "articleSection": meta["topics"][0] if meta["topics"] else "",
         "mainEntityOfPage": canonical,
     }
@@ -144,15 +178,19 @@ def build_json_ld(meta, canonical):
 
 def render_post(meta, body_html, canonical):
     template = TEMPLATE_PATH.read_text(encoding="utf-8")
+    keywords = dedupe_keywords(meta)
     tag_pills = "".join(f'<span class="tag">#{xml_escape(t)}</span>' for t in meta["tags"])
-    topic_tags = "\n".join(f'<meta property="article:tag" content="{xml_escape(t)}">' for t in meta["tags"] + meta["topics"])
+    topic_tags = "\n".join(f'<meta property="article:tag" content="{xml_escape(t)}">' for t in keywords)
+    article_author_tags = "\n".join(f'<meta property="article:author" content="{xml_escape(a)}">' for a in meta["authors"])
     replacements = {
         "{{TITLE}}": xml_escape(meta["title"]),
         "{{EXCERPT}}": xml_escape(meta["excerpt"]),
-        "{{TAGS_CSV}}": xml_escape(", ".join(meta["tags"] + meta["topics"])),
+        "{{TAGS_CSV}}": xml_escape(", ".join(keywords)),
         "{{AUTHOR}}": xml_escape(meta["author"]),
+        "{{ARTICLE_AUTHOR_TAGS}}": article_author_tags,
         "{{CANONICAL}}": canonical,
         "{{IMAGE_ABS}}": meta["image_abs"],
+        "{{IMAGE_ALT}}": "Young AI Leaders Community logo — Gweru Hub",
         "{{IMAGE_REL}}": meta["image_rel"],
         "{{DATE_ISO}}": meta["date_obj"].strftime("%Y-%m-%d"),
         "{{DATE_DISPLAY}}": meta["date_obj"].strftime("%-d %B %Y") if sys.platform != "win32" else meta["date_obj"].strftime("%#d %B %Y"),
@@ -174,6 +212,8 @@ def update_manifest(meta):
         "title": meta["title"],
         "date": meta["date_obj"].strftime("%Y-%m-%d"),
         "author": meta["author"],
+        "authors": meta["authors"],
+        "featured": bool(meta.get("featured")),
         "topics": meta["topics"],
         "tags": meta["tags"],
         "image": meta["image_rel"].replace("../", ""),

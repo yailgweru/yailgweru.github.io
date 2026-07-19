@@ -1,5 +1,5 @@
 ---
-title: Reflecting on the aunch the Gweru Hub
+title: Reflecting on the launch the Gweru Hub
 date: 2026-03-01
 topics: [Community, AI for Good]
 tags: [launch, gweru, ai-for-good, community]

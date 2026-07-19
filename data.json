@@ -74,11 +74,11 @@
       "items": [
         {
           "label": "Our mission",
-          "detail": "Empowering Gweru’s youth to build ethical, responsible and African-rooted AI — localised for our languages, our context and Africa’s unique challenges."
+          "detail": "Empowering Gweru’s youth to build ethical, responsible and African-rooted AI that is localised for our languages, our context and Africa’s unique challenges."
         },
         {
           "label": "The hub",
-          "detail": "A tight-knit African youth tech community of up to 50 young AI leaders in Gweru, Midlands Province — collaborating on real projects with community impact across Zimbabwe and Southern Africa."
+          "detail": "A tight-knit African youth tech community of young AI leaders in Gweru, Midlands Province  collaborating on real projects with community impact across Zimbabwe and Southern Africa."
         },
         {
           "label": "AI for Good network",
@@ -98,35 +98,13 @@
       ],
       "items": [
         {
-          "label": "AI for agriculture",
-          "detail": "Community-based African AI solutions supporting smallholder farmers — tackling food security and agri-tech challenges across the Midlands and rural Zimbabwe.",
+          "label": "AI Literacy for All",
+          "detail": "Webinar and physical sessions that focused on equiping audience with the knowledge of AI tools and best practices .",
           "more": {
             "body": [
-              "Smallholder farmers around Gweru carry deep knowledge of their land — our goal is technology that sits usefully alongside that knowledge, never above it.",
-              "With agriculture students and local farmers, the hub prototypes simple, low-data AI tools: crop-disease image checks that run on entry-level phones and plain-language seasonal summaries for planning the planting window.",
-              "Every tool is tested in the field with the people who will use it, and judged by one metric: does it earn its place in their day?"
-            ]
-          }
-        },
-        {
-          "label": "Education & languages",
-          "detail": "Localised AI learning tools that embrace African languages, democratising tech and AI literacy for learners in Gweru, Zimbabwe and rural African communities.",
-          "more": {
-            "body": [
-              "Most AI tools speak English first and everything else as an afterthought. For many learners in the Midlands, that is a wall between them and a technology meant for everyone.",
-              "The hub builds learning materials that teach AI concepts through Shona and Ndebele — datasets drawn from local proverbs, classification exercises from the marketplace, and analogies that live where our learners live.",
-              "These materials are published openly so other hubs across Africa can translate and adapt them. Language should be a doorway into AI, never the lock on it."
-            ]
-          }
-        },
-        {
-          "label": "SDG-aligned impact",
-          "detail": "Every hub project maps to the UN Sustainable Development Goals — measurable, ethical and community-first technology built for Africa.",
-          "more": {
-            "body": [
-              "Every hub project is mapped to the UN Sustainable Development Goals before it starts — impact is a design requirement, not an afterthought.",
-              "From food security to quality education, each build states the goal it serves, who it serves, and how we will know it worked.",
-              "The result is a portfolio of small, measurable, community-first projects rather than technology for its own sake."
+              "Looking at people in the sorrounding community , we realised that people only used a handful number of tools. We worked on introducing them to various tools and showcasing their potential",
+              "Using a few tools we showcased how people could use different tools for more than chatting. The sessions included sharing tools that asssist with research , study and media generation and techniques to get the best output from them.",
+              "We also ended the sessions by highlighting the dangers of AI and how they could be countered and catered for."
             ]
           }
         }
@@ -145,7 +123,7 @@
       "items": [
         {
           "label": "Hub leadership",
-          "detail": "Led by Brandon T. Bande with an organising team and impact leadership driving Africa-facing tech innovation from Gweru, 2025–2027.",
+          "detail": "Meet organising team and impact leadership driving Africa-facing tech innovation from Gweru, 2025–2027.",
           "more": {
             "people": "leadership",
             "title": "Hub leadership"
@@ -153,7 +131,7 @@
         },
         {
           "label": "Our members",
-          "detail": "Up to 50 passionate African youth in tech — students, developers, researchers and change-makers — each committed to at least one community impact project per year.",
+          "detail": "African youth in tech — students, developers, researchers and change-makers — each committed to at least one community impact project per year.",
           "more": {
             "people": "members",
             "title": "Official members"
@@ -201,28 +179,14 @@
             "role": "Impact Leader",
             "image": "",
             "bio": [
-              "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru."
+              "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru. Also doubles as our social media manager."
             ],
             "linkedin": "",
             "site": ""
           }
         ],
         "members": [
-          { "name": "Tanaka Moyo (test)", "role": "Software Engineering", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Rufaro Chikara (test)", "role": "Data Science", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Tapiwa Ndlovu (test)", "role": "AI Literacy · Education", "image": "", "brief": "Filler profile testing a slightly longer one-line bio to check how the card handles wrapping text." },
-          { "name": "Farai Sibanda (test)", "role": "Community Outreach", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Chiedza Gumbo (test)", "role": "Product Design", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Tinashe Dube (test)", "role": "Agri-Tech", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Nyasha Marufu (test)", "role": "Backend Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Kudzai Mutasa (test)", "role": "Research", "image": "", "brief": "A filler bio that runs a little longer than the rest, to test the three-line clamp on the member card." },
-          { "name": "Simbarashe Chirwa (test)", "role": "Frontend Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Vimbai Machingauta (test)", "role": "Partnerships", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Blessing Nyathi (test)", "role": "Mobile Development", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Panashe Gwiriri (test)", "role": "Machine Learning", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Anesu Chitiyo (test)", "role": "Events & Logistics", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Tadiwa Chatiza (test)", "role": "UI/UX Design", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." },
-          { "name": "Ropafadzo Zulu (test)", "role": "Cloud & DevOps", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." }
+          { "name": "Tanaka Moyo (test)", "role": "Software Engineering", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." }
         ]
       }
     },
@@ -239,7 +203,7 @@
       "items": [
         {
           "label": "Email us",
-          "detail": "gweruhub@youngaileaders.org (placeholder — replace with your official hub address)."
+          "detail": "yail.gweru@gmail.com"
         },
         {
           "label": "Social media",
@@ -247,7 +211,7 @@
         },
         {
           "label": "Find us",
-          "detail": "Gweru, Midlands Province, Zimbabwe — a growing African tech hub at the heart of the country, now a node in the global AI and innovation map."
+          "detail": "Gweru, Midlands Province, Zimbabwe  a growing African tech hub at the heart of the country, now a node in the global AI and innovation map."
         }
       ]
     },
@@ -402,7 +366,8 @@
             "body": [
               "Support youth-led, ethical AI and tech innovation in Africa — sponsor a project, host a workshop, offer mentorship or open a venue.",
               "Partners get a direct line into a community of up to 50 young AI leaders building real, SDG-aligned projects in the Midlands.",
-              "Start the conversation through the Contact anchor — we will find the shape of partnership that fits."
+              "Start the conversation through the Contact anchor — we will find the shape of partnership that fits.",
+              "Reach out via email : yail.gweru@gmail.com"
             ]
           }
         }

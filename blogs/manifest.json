@@ -20,5 +20,27 @@
     ],
     "image": "assets/blogs/launching-the-gweru-hub/launch-hero.jpg",
     "excerpt": "How the global AI movement found a home in the Midlands."
+  },
+  {
+    "slug": "reflecting-on-the-aunch-the-gweru-hub",
+    "title": "Reflecting on the aunch the Gweru Hub",
+    "date": "2026-03-01",
+    "author": "Brandon T. Bande",
+    "authors": [
+      "Brandon T. Bande"
+    ],
+    "featured": true,
+    "topics": [
+      "Community",
+      "AI for Good"
+    ],
+    "tags": [
+      "launch",
+      "gweru",
+      "ai-for-good",
+      "community"
+    ],
+    "image": "assets/blogs/reflecting-on-the-aunch-the-gweru-hub/launch-hero.jpg",
+    "excerpt": "How the global AI movement found a home in the Midlands and what it represents."
   }
 ]

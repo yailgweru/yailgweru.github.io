@@ -55,11 +55,11 @@ not the primary workflow:
   the normal `assets/logo.png` path.
 
 If you edited `data.json` or `assets/logo.png` and are about to preview
-over `file://`, run both sync scripts first:
+over `file://`, run the sync scripts first — `update_site.py` chains all
+of them (see below):
 
 ```
-python scripts/inline_data.py
-python scripts/inline_logo.py
+python scripts/update_site.py
 ```
 
 Skip this when previewing over `http://`/`https://` (including the live
@@ -88,6 +88,7 @@ blogs/                     # the single source of truth for all blog content
 scripts/
   publish_blog.py             # GITIGNORED — the markdown -> HTML publish pipeline
   _blog_template.html          # committed — the HTML shell the script fills in
+  update_site.py                # committed — runs prerender_seo/inline_data/inline_logo (+ make_favicons if logo.png changed) in one go
   make_favicons.py             # committed — regenerates assets/favicon/ from logo.png
   inline_data.py                # committed — resyncs data.json into index.html's file:// fallback block
   inline_logo.py                 # committed — resyncs logo.png into index.html's file:// texture data URI
@@ -302,10 +303,11 @@ deep links.
   `INLINE-BLOG-LIST` (static post cards with real `.html` links) in
   `blogs/index.html`. Crawlers that don't run JS see the full content;
   at runtime `applySeo()` in `index.html` rebuilds the same output from
-  `data.json`, so JS and no-JS views match. **Run `prerender_seo.py` after
-  any `data.json` copy/SEO edit and after publishing or removing a blog
-  post** (alongside `inline_data.py`). Edit copy in `data.json`, never in
-  the generated blocks.
+  `data.json`, so JS and no-JS views match. **Run `python
+  scripts/update_site.py` after any `data.json` copy/SEO edit and after
+  publishing or removing a blog post** — it runs `prerender_seo.py`
+  alongside `inline_data.py`/`inline_logo.py` in the right order. Edit
+  copy in `data.json`, never in the generated blocks.
 - The Python builders in `prerender_seo.py` deliberately mirror
   `applySeo()` and the card renderer in `blogs/index.html` — if you change
   markup in one place, change it in the other (both sides carry a comment

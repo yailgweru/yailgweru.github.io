@@ -78,7 +78,7 @@
         },
         {
           "label": "The hub",
-          "detail": "A tight-knit African youth tech community of young AI leaders in Gweru, Midlands Province  collaborating on real projects with community impact across Zimbabwe and Southern Africa."
+          "detail": "A tight-knit African youth tech community of young AI leaders in Gweru, Midlands Province — collaborating on real projects with community impact across Zimbabwe and Southern Africa."
         },
         {
           "label": "AI for Good network",
@@ -99,12 +99,12 @@
       "items": [
         {
           "label": "AI Literacy for All",
-          "detail": "Webinar and physical sessions that focused on equiping audience with the knowledge of AI tools and best practices .",
+          "detail": "Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.",
           "more": {
             "body": [
-              "Looking at people in the sorrounding community , we realised that people only used a handful number of tools. We worked on introducing them to various tools and showcasing their potential",
-              "Using a few tools we showcased how people could use different tools for more than chatting. The sessions included sharing tools that asssist with research , study and media generation and techniques to get the best output from them.",
-              "We also ended the sessions by highlighting the dangers of AI and how they could be countered and catered for."
+              "Looking at the surrounding community, we realised that most people only used a handful of AI tools. We set out to introduce them to a wider range of tools and show what each one can do.",
+              "Using a few of those tools, we showed how AI can do far more than chat. The sessions covered tools that assist with research, study and media generation, along with techniques to get the best output from them.",
+              "We closed each session by highlighting the risks of AI and how to guard against them."
             ]
           }
         }
@@ -123,7 +123,7 @@
       "items": [
         {
           "label": "Hub leadership",
-          "detail": "Meet organising team and impact leadership driving Africa-facing tech innovation from Gweru, 2025–2027.",
+          "detail": "Meet the organising team and impact leadership driving Africa-facing tech innovation from Gweru, 2025–2027.",
           "more": {
             "people": "leadership",
             "title": "Hub leadership"
@@ -185,9 +185,7 @@
             "site": ""
           }
         ],
-        "members": [
-          { "name": "Tanaka Moyo (test)", "role": "Software Engineering", "image": "", "brief": "Filler profile for grid testing — replace with a real member in data.json." }
-        ]
+        "members": []
       }
     },
     {
@@ -211,7 +209,7 @@
         },
         {
           "label": "Find us",
-          "detail": "Gweru, Midlands Province, Zimbabwe  a growing African tech hub at the heart of the country, now a node in the global AI and innovation map."
+          "detail": "Gweru, Midlands Province, Zimbabwe — a growing African tech hub at the heart of the country, now a node in the global AI and innovation map."
         }
       ]
     },
@@ -367,7 +365,7 @@
               "Support youth-led, ethical AI and tech innovation in Africa — sponsor a project, host a workshop, offer mentorship or open a venue.",
               "Partners get a direct line into a community of up to 50 young AI leaders building real, SDG-aligned projects in the Midlands.",
               "Start the conversation through the Contact anchor — we will find the shape of partnership that fits.",
-              "Reach out via email : yail.gweru@gmail.com"
+              "Reach out by email: yail.gweru@gmail.com"
             ]
           }
         }

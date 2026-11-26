@@ -1,0 +1,66 @@
+[
+  {
+    "slug": "brandon-t-bande",
+    "name": "Brandon T. Bande",
+    "group": "leadership",
+    "order": 1,
+    "role": "Hub Leader",
+    "image": "",
+    "brief": "Leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province.",
+    "bio": [
+      "Leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province."
+    ],
+    "linkedin": "",
+    "site": "",
+    "url": "team/brandon-t-bande.html",
+    "projects": []
+  },
+  {
+    "slug": "linda-mapindlo",
+    "name": "Linda Mapindlo",
+    "group": "leadership",
+    "order": 2,
+    "role": "Organising Team",
+    "image": "",
+    "brief": "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub.",
+    "bio": [
+      "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
+    ],
+    "linkedin": "",
+    "site": "",
+    "url": "team/linda-mapindlo.html",
+    "projects": []
+  },
+  {
+    "slug": "webnergy-simango",
+    "name": "Webnergy Simango",
+    "group": "leadership",
+    "order": 3,
+    "role": "Organising Team",
+    "image": "",
+    "brief": "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub.",
+    "bio": [
+      "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
+    ],
+    "linkedin": "",
+    "site": "",
+    "url": "team/webnergy-simango.html",
+    "projects": []
+  },
+  {
+    "slug": "mukudzeishe-primrose-tarugarira",
+    "name": "Mukudzeishe Primrose Tarugarira",
+    "group": "leadership",
+    "order": 4,
+    "role": "Impact Leader",
+    "image": "",
+    "brief": "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru. Also doubles as our social media manager.",
+    "bio": [
+      "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru. Also doubles as our social media manager."
+    ],
+    "linkedin": "",
+    "site": "",
+    "url": "team/mukudzeishe-primrose-tarugarira.html",
+    "projects": []
+  }
+]

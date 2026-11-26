@@ -59,6 +59,12 @@
     }
   },
   "logo": "assets/logo.png",
+  "firebase": {
+    "apiKey": "",
+    "authDomain": "",
+    "projectId": "",
+    "appId": ""
+  },
   "sections": [
     {
       "id": "about",
@@ -95,19 +101,8 @@
         4.6,
         -6
       ],
-      "items": [
-        {
-          "label": "AI Literacy for All",
-          "detail": "Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.",
-          "more": {
-            "body": [
-              "Looking at the surrounding community, we realised that most people only used a handful of AI tools. We set out to introduce them to a wider range of tools and show what each one can do.",
-              "Using a few of those tools, we showed how AI can do far more than chat. The sessions covered tools that assist with research, study and media generation, along with techniques to get the best output from them.",
-              "We closed each session by highlighting the risks of AI and how to guard against them."
-            ]
-          }
-        }
-      ]
+      "empty": "Projects are being documented — check back soon.",
+      "items": []
     },
     {
       "id": "team",
@@ -133,59 +128,36 @@
           "detail": "African youth in tech — students, developers, researchers and change-makers — each committed to at least one community impact project per year.",
           "more": {
             "people": "members",
-            "title": "Official members"
+            "title": "Official members",
+            "empty": "Member profiles are on their way — check back soon."
           }
         },
         {
           "label": "Join the hub",
-          "detail": "Applications open through the AI for Good Young AI Leaders programme. Bring your ideas — we’ll bring the community."
-        }
-      ],
-      "people": {
-        "leadership": [
-          {
-            "name": "Brandon T. Bande",
-            "role": "Hub Leader",
-            "image": "",
-            "bio": [
-              "Leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province."
+          "detail": "Want to learn, build or volunteer with the Gweru Hub? Apply here — it takes two minutes.",
+          "more": {
+            "title": "Join the hub",
+            "body": [
+              "The hub is open to students, young professionals and anyone in Gweru and the Midlands who is curious about AI. Tell us a little about yourself and how you’d like to take part, and the organising team will get back to you by email."
             ],
-            "linkedin": "",
-            "site": ""
-          },
-          {
-            "name": "Linda Mapindlo",
-            "role": "Organising Team",
-            "image": "",
-            "bio": [
-              "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
-            ],
-            "linkedin": "",
-            "site": ""
-          },
-          {
-            "name": "Webnergy Simango",
-            "role": "Organising Team",
-            "image": "",
-            "bio": [
-              "Part of the hub's organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub."
-            ],
-            "linkedin": "",
-            "site": ""
-          },
-          {
-            "name": "Mukudzeishe Primrose Tarugarira",
-            "role": "Impact Leader",
-            "image": "",
-            "bio": [
-              "Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru. Also doubles as our social media manager."
-            ],
-            "linkedin": "",
-            "site": ""
+            "form": {
+              "collection": "joinRequests",
+              "submitLabel": "Send application",
+              "success": "Thanks — your application is in. The organising team will be in touch by email.",
+              "offline": "Online applications open soon. In the meantime, email us at yail.gweru@gmail.com.",
+              "fields": [
+                { "name": "name", "label": "Full name", "type": "text", "required": true, "max": 100 },
+                { "name": "email", "label": "Email", "type": "email", "required": true, "max": 200 },
+                { "name": "phone", "label": "Phone or WhatsApp (optional)", "type": "tel", "required": false, "max": 40 },
+                { "name": "affiliation", "label": "School, university or workplace (optional)", "type": "text", "required": false, "max": 150 },
+                { "name": "interest", "label": "How would you like to take part?", "type": "select", "required": true, "options": ["Attend sessions and events", "Volunteer at events", "Mentor or teach", "Build a project", "Something else"] },
+                { "name": "message", "label": "Tell us a little about yourself (optional)", "type": "textarea", "required": false, "max": 1500 },
+                { "name": "consent", "label": "I agree to be contacted by the hub about my application.", "type": "checkbox", "required": true }
+              ]
+            }
           }
-        ],
-        "members": []
-      }
+        }
+      ]
     },
     {
       "id": "contact",
@@ -241,6 +213,7 @@
       "id": "blogs",
       "title": "Blogs",
       "sub": "Stories from the hub",
+      "empty": "New stories are on the way — check back soon.",
       "color": 10741301,
       "pos": [
         5.4,
@@ -352,7 +325,7 @@
             "body": [
               "The hub collaborates with universities, schools and innovation spaces across Zimbabwe and Southern Africa to grow tech capacity from the ground up.",
               "Partnerships range from guest workshops and student challenges to shared space and mentorship — whatever moves local AI literacy forward.",
-              "If your institution wants to work with the hub, reach out through the Contact anchor."
+              "If your institution wants to work with the hub, use the Become a partner form."
             ]
           }
         },
@@ -362,10 +335,25 @@
           "more": {
             "body": [
               "Support youth-led, ethical AI and tech innovation in Africa — sponsor a project, host a workshop, offer mentorship or open a venue.",
-              "Partners get a direct line into a community of up to 50 young AI leaders building real, SDG-aligned projects in the Midlands.",
-              "Start the conversation through the Contact anchor — we will find the shape of partnership that fits.",
-              "Reach out by email: yail.gweru@gmail.com"
-            ]
+              "Partners get a direct line into a community of young AI leaders building real projects in Gweru and the Midlands.",
+              "Tell us about your organisation and what you have in mind below — we’ll find the shape of partnership that fits."
+            ],
+            "form": {
+              "collection": "partnerRequests",
+              "submitLabel": "Send partnership request",
+              "success": "Thank you — we’ve received your request and will reply by email.",
+              "offline": "Online partnership requests open soon. In the meantime, email us at yail.gweru@gmail.com.",
+              "fields": [
+                { "name": "name", "label": "Your name", "type": "text", "required": true, "max": 100 },
+                { "name": "email", "label": "Email", "type": "email", "required": true, "max": 200 },
+                { "name": "organisation", "label": "Organisation", "type": "text", "required": true, "max": 150 },
+                { "name": "position", "label": "Your role (optional)", "type": "text", "required": false, "max": 100 },
+                { "name": "phone", "label": "Phone (optional)", "type": "tel", "required": false, "max": 40 },
+                { "name": "interest", "label": "What kind of partnership?", "type": "select", "required": true, "options": ["Sponsor a project", "Host a workshop or venue", "Mentor members", "Speak at an event", "Something else"] },
+                { "name": "message", "label": "Tell us what you have in mind", "type": "textarea", "required": true, "max": 2000 },
+                { "name": "consent", "label": "I agree to be contacted by the hub about this request.", "type": "checkbox", "required": true }
+              ]
+            }
           }
         }
       ]

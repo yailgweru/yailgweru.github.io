@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Prerender SEO-critical HTML from data.json + blogs/manifest.json.
+"""Prerender SEO-critical HTML from data.json + the generated manifests
+(blogs/, team/ and projects/manifest.json).
 
 The home page is a JS-rendered Three.js scene; at runtime applySeo() in
 index.html rebuilds the head metadata, JSON-LD and the hidden #seo-content
@@ -14,10 +15,11 @@ inline_data.py's INLINE-DATA block):
   blogs/index.html  INLINE-BLOG-LIST    static post cards with real .html links
 
 The runtime JS then merely refreshes identical content, so JS-rendering and
-no-JS crawlers see the same thing. Run after every data.json copy/SEO edit
-and after publishing or removing a blog post:
+no-JS crawlers see the same thing. Runs as part of
 
-    python scripts/prerender_seo.py
+    python scripts/update_site.py
+
+after build_pages.py has refreshed the team/projects manifests.
 
 The HTML builders here mirror applySeo() in index.html and the card
 renderer in blogs/index.html — if you change the markup in one place,
@@ -32,11 +34,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA_JSON = ROOT / "data.json"
 MANIFEST_JSON = ROOT / "blogs" / "manifest.json"
+TEAM_JSON = ROOT / "team" / "manifest.json"
+PROJECTS_JSON = ROOT / "projects" / "manifest.json"
 INDEX_HTML = ROOT / "index.html"
 BLOG_INDEX_HTML = ROOT / "blogs" / "index.html"
-SITEMAP_XML = ROOT / "sitemap.xml"
 
-RERUN_NOTE = "Rerun after editing data.json or publishing/removing a blog post. Do not hand-edit."
+RERUN_NOTE = "Rerun python scripts/update_site.py after editing data.json, data/team, data/projects or a blog post. Do not hand-edit."
 
 
 def block_re(name):
@@ -76,6 +79,28 @@ def merge_blog_items(sections, manifest):
             }
             for p in posts
         ]
+
+
+def merge_team_and_projects(sections, team, projects):
+    """Mirror of the team/projects merge in index.html's init() — people
+    become the team section's people block, projects become the projects
+    section's items, each with a link to its own static page."""
+    team_section = next((s for s in sections if s.get("id") == "team"), None)
+    if team_section is not None:
+        team_section["people"] = {
+            "leadership": [p for p in team if p.get("group") == "leadership"],
+            "members": [p for p in team if p.get("group") == "member"],
+        }
+    project_section = next((s for s in sections if s.get("id") == "projects"), None)
+    if project_section is not None:
+        project_section["items"] = [
+            {"label": p["title"], "detail": p.get("summary", ""), "link": p["url"], "more": {"body": p.get("body", [])}}
+            for p in projects
+        ]
+
+
+def load_manifest(path):
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
 
 
 def build_head_block(site):
@@ -194,7 +219,10 @@ def build_seo_content(site, sections):
                 bio = p.get("bio")
                 bio_text = " ".join(bio) if isinstance(bio, list) else (bio or p.get("brief", ""))
                 text = " — ".join(t for t in [p.get("role", ""), bio_text] if t)
-                html += f"<li><h3>{escape(p.get('name', ''))}</h3><p>{escape(text)}</p></li>"
+                name = escape(p.get("name", ""))
+                if p.get("url"):
+                    name = f'<a href="{escape(p["url"], quote=True)}">{name}</a>'
+                html += f"<li><h3>{name}</h3><p>{escape(text)}</p></li>"
         html += "</ul></section>"
 
     return (
@@ -229,25 +257,13 @@ def build_blog_grid(manifest):
     return "\n".join(cards)
 
 
-def check_sitemap(manifest):
-    """Non-fatal consistency warnings — sitemap.xml itself is owned by
-    publish_blog.py, which appends entries at publish time."""
-    sitemap = SITEMAP_XML.read_text(encoding="utf-8")
-    for p in manifest:
-        page = f"blogs/{p['slug']}.html"
-        if page not in sitemap:
-            print(f"WARNING: {page} is in blogs/manifest.json but missing from sitemap.xml")
-    for loc in re.findall(r"<loc>https://yailgweru\.github\.io/(.*?)</loc>", sitemap):
-        if loc and not (ROOT / loc).exists():
-            print(f"WARNING: sitemap.xml lists /{loc} but that file does not exist")
-
-
 def main():
     data = json.loads(DATA_JSON.read_text(encoding="utf-8"))
-    manifest = json.loads(MANIFEST_JSON.read_text(encoding="utf-8"))
+    manifest = load_manifest(MANIFEST_JSON)
     site = data["site"]
     sections = data["sections"]
     merge_blog_items(sections, manifest)
+    merge_team_and_projects(sections, load_manifest(TEAM_JSON), load_manifest(PROJECTS_JSON))
 
     changed = []
 
@@ -265,8 +281,6 @@ def main():
     if new_blog != blog_html:
         BLOG_INDEX_HTML.write_text(new_blog, encoding="utf-8")
         changed.append("blogs/index.html")
-
-    check_sitemap(manifest)
 
     if changed:
         print("Prerendered SEO blocks updated in: " + ", ".join(changed))

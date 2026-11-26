@@ -2,3 +2,5 @@ User-agent: *
 Allow: /
 
 Sitemap: https://yailgweru.github.io/sitemap.xml
+
+# A plain-text guide to the site for AI answer engines: https://yailgweru.github.io/llms.txt

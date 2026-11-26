@@ -7,9 +7,11 @@
     <description>Stories from the Young AI Leaders Gweru Hub: projects, workshops and lessons from building AI in Gweru, Zimbabwe and Southern Africa.</description>
     <language>en-zw</language>
     <image>
-      <url>https://yailgweru.github.io/assets/logo.png</url>
+      <url>https://yailgweru.github.io/assets/favicon/favicon-96x96.png</url>
       <title>Young AI Leaders Gweru Hub — Blog</title>
       <link>https://yailgweru.github.io/#blogs</link>
+      <width>96</width>
+      <height>96</height>
     </image>
   </channel>
 </rss>

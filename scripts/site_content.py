@@ -17,7 +17,9 @@ build stops before writing anything.
 import copy
 import json
 import re
+import subprocess
 import sys
+from datetime import date
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -25,8 +27,19 @@ ROOT = Path(__file__).resolve().parent.parent
 SITE_ROOT = "https://yailgweru.github.io"
 ORG_ID = SITE_ROOT + "/#organization"
 ORG_NAME = "Young AI Leaders — Gweru Hub"
-LOGO_ABS = SITE_ROOT + "/assets/logo.png"
+LOGO_ABS = SITE_ROOT + "/assets/logo.png"  # the logo itself: JSON-LD "logo" (crawlers only)
 LOGO_ALT = "Young AI Leaders Community logo — Gweru Hub"
+# Every page's share image (og:image / twitter:image, steering D-16): the logo
+# centred on a 1200x630 white card, made by make_favicons.py.
+SHARE_IMAGE_ABS = SITE_ROOT + "/assets/share.jpg"
+SHARE_IMAGE_SIZE = (1200, 630)
+
+# Facts about the hub that every page states the same way (SEO/GEO).
+HUB_NAME = "Young AI Leaders Gweru Hub"
+HUB_PLACE = "Gweru, Midlands Province, Zimbabwe"
+NETWORK_NAME = "Young AI Leaders Community"
+NETWORK_PARENT = "ITU's AI for Good"
+BIO_HINT_WORDS = 40  # shorter bios get a build hint: search and AI answers need substance
 
 IMAGE_EXTS = (".jpg", ".jpeg", ".png", ".webp")
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -79,6 +92,53 @@ def person_links(p):
     """[(href, icon, label)] for a person's ITU profile, then their socials."""
     links = [(p["itu"], ITU_LINK[1], ITU_LINK[0])] if p["itu"] else []
     return links + [(s["href"], s["icon"], s["label"]) for s in p["socials"]]
+
+
+def joined(items):
+    items = list(items)
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+def person_summary(p):
+    """One factual sentence (two with projects) that search engines and AI
+    answer engines can quote as-is. Built only from the person's data and
+    facts about the hub, so it never claims more than the profile does."""
+    who = f"{p['name']} ({p['role']})" if p["role"] else p["name"]
+    part = f"part of the leadership team of {HUB_NAME}" if p["group"] == "leadership" else f"a member of {HUB_NAME}"
+    text = (
+        f"{who} is {part}, a youth-led artificial intelligence and technology community in {HUB_PLACE}, "
+        f"and part of the {NETWORK_NAME} under {NETWORK_PARENT}."
+    )
+    if p["projects"]:
+        goals = sorted({g["num"]: g["label"] for pr in p["projects"] for g in pr["sdgs"]}.items())
+        text += f" {p['name']} works on {joined(pr['title'] for pr in p['projects'])}"
+        text += f", working towards {joined(label for _n, label in goals)}." if goals else "."
+    return text
+
+
+def git(*args):
+    try:
+        return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
+    except (OSError, subprocess.CalledProcessError):
+        return ""
+
+
+def lastmod(*paths):
+    """Date (YYYY-MM-DD) of the last commit touching any of these files, or
+    today if one has uncommitted changes."""
+    today = date.today().isoformat()
+    paths = [str(p) for p in paths if p]
+    if not paths:
+        return today
+    if git("status", "--porcelain", "--", *paths):
+        return today
+    return git("log", "-1", "--format=%cs", "--", *paths) or today
+
+
+def created(path):
+    """Date of the commit that added this file, or today if it isn't committed yet."""
+    dates = git("log", "--diff-filter=A", "--follow", "--format=%cs", "--", str(path)).splitlines()
+    return dates[-1] if dates else date.today().isoformat()
 
 
 def slugify(text):
@@ -161,28 +221,36 @@ def _person(slug, w, p, reserved, errors, warnings):
         if is_external(itu) and not re.match(r"^https?://([a-z0-9-]+\.)*itu\.int(/|$)", itu):
             errors.append(f"{w} itu: '{itu}' should be the person's profile on an itu.int site (e.g. aiforgood.itu.int)")
 
+    tagged = as_list(p.get("projects"))
+    bio = [str(t) for t in as_list(p.get("bio"))]
+    image = errors.image(w, "team", slug, p.get("image", ""))
+
     missing = []
     if len(socials) < MIN_SOCIALS:
         missing.append(f"{len(socials)}/{MIN_SOCIALS} socials")
     if not itu:
         missing.append("no ITU profile ('itu')")
+    # Not required, but they decide how well search engines and AI answers know the person.
+    if not image:
+        missing.append(f"no photo (add assets/team/{slug}.jpg)")
+    words = len(" ".join(bio).split())
+    if words < BIO_HINT_WORDS:
+        missing.append(f"short bio ({words} words; aim for 60–150)")
     if missing:
         warnings.append(f"{w}: {', '.join(missing)}")
-
-    tagged = as_list(p.get("projects"))
-    bio = [str(t) for t in as_list(p.get("bio"))]
     return {
         "slug": slug,
         "name": p.get("name", ""),
         "group": p.get("group", "member"),
         "order": p.get("order", 999),
         "role": p.get("role", ""),
-        "image": errors.image(w, "team", slug, p.get("image", "")),
+        "image": image,
         "brief": p.get("brief", "") or (bio[0] if bio else ""),
         "bio": bio,
         "socials": socials,
         "itu": itu,
         "page": f"team/{slug}.html",
+        "source": w,
         "projects": [],
         "_where": w,
         "_tagged": tagged,
@@ -247,6 +315,7 @@ def _project(slug, w, p, people, errors):
         "image": errors.image(w, "projects", slug, p.get("image", "")),
         "links": links,
         "page": f"projects/{slug}.html",
+        "source": w,
     }
 
 
@@ -270,6 +339,7 @@ def _assemble_sections(data, team, projects, posts):
                     "kicker": "Hub Blog",
                     "meta": f"{p['date']} · {p.get('author', '')}",
                     "image": p.get("image", ""),
+                    "images": p.get("images") or [],
                     "fetch": f"blogs/{p['slug']}.html",
                     "fallback": p.get("excerpt", ""),
                 },
@@ -296,6 +366,7 @@ def _assemble_sections(data, team, projects, posts):
                     "title": p["title"],
                     "meta": " · ".join(m for m in meta if m),
                     "image": p["image"],
+                    "images": p["hero"],
                     "lead": p["summary"],
                     "body": p["body"],
                     "project": p,
@@ -369,6 +440,25 @@ def load():
     team = sorted(people.values(), key=lambda p: (p["group"] != "leadership", p["order"], p["name"].lower()))
     posts = sorted(posts, key=lambda p: p["date"], reverse=True)
 
+    # Tinified thumbnails of every local image (made once, then reused; see
+    # images.py). Only after validation, so a broken build writes nothing.
+    from images import HERO_WIDTHS, PERSON_WIDTHS, cleanup, is_local_image, variants
+
+    thumb_dirs = {"assets/team/thumbs", "assets/projects/thumbs"}
+    for p in team:
+        p["photo"] = variants(p["image"], PERSON_WIDTHS, square=True) if is_local_image(p["image"]) else []
+    for pr in projects:
+        pr["hero"] = variants(pr["image"], HERO_WIDTHS) if is_local_image(pr["image"]) else []
+    sections = _assemble_sections(data, team, projects, posts)
+    for s in sections:
+        for item in s.get("items", []):
+            more = item.get("more") or {}
+            if "images" not in more and is_local_image(more.get("image")):
+                more["images"] = variants(more["image"], HERO_WIDTHS)
+                thumb_dirs.add((Path(more["image"]).parent / "thumbs").as_posix())
+    for path in cleanup(sorted(thumb_dirs)):
+        print(f"  removed unused thumbnail {path}")
+
     return SimpleNamespace(
         data=data,
         site=data["site"],
@@ -376,5 +466,5 @@ def load():
         projects=projects,
         posts=posts,
         warnings=warnings,
-        sections=_assemble_sections(data, team, projects, posts),
+        sections=sections,
     )

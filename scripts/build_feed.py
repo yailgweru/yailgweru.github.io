@@ -14,7 +14,7 @@ from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 from xml.sax.saxutils import escape
 
-from site_content import LOGO_ABS, ROOT, SITE_ROOT, load
+from site_content import ROOT, SITE_ROOT, load
 
 FEED = ROOT / "feed.xml"
 ZIMBABWE = timezone(timedelta(hours=2))
@@ -35,6 +35,7 @@ def post_content(slug):
     if not match:
         return ""
     body = re.sub(r'(src|href)="\.\./', lambda m: f'{m.group(1)}="{SITE_ROOT}/', match.group(1).strip())
+    body = re.sub(r'srcset="([^"]*)"', lambda m: 'srcset="' + m.group(1).replace("../", SITE_ROOT + "/") + '"', body)
     return body.replace("]]>", "]]]]><![CDATA[>")
 
 
@@ -75,7 +76,9 @@ def render_feed(posts, content_for=post_content):
         f'    <atom:link href="{SITE_ROOT}/feed.xml" rel="self" type="application/rss+xml"/>\n'
         f"    <description>{escape(DESCRIPTION)}</description>\n"
         "    <language>en-zw</language>\n"
-        f"    <image>\n      <url>{LOGO_ABS}</url>\n      <title>{escape(TITLE)}</title>\n      <link>{SITE_ROOT}/#blogs</link>\n    </image>\n"
+        # RSS caps the channel image at 144px wide: the tinified 96px favicon.
+        f"    <image>\n      <url>{SITE_ROOT}/assets/favicon/favicon-96x96.png</url>\n      <title>{escape(TITLE)}</title>\n"
+        f"      <link>{SITE_ROOT}/#blogs</link>\n      <width>96</width>\n      <height>96</height>\n    </image>\n"
         f"{last}"
         + "".join(items)
         + "  </channel>\n</rss>\n"

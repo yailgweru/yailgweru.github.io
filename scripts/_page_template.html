@@ -18,6 +18,8 @@
 <meta property="og:title" content="{{OG_TITLE}}">
 <meta property="og:description" content="{{DESCRIPTION}}">
 <meta property="og:image" content="{{IMAGE_ABS}}">
+<meta property="og:image:width" content="{{IMAGE_W}}">
+<meta property="og:image:height" content="{{IMAGE_H}}">
 <meta property="og:image:alt" content="{{IMAGE_ALT}}">
 <meta property="og:locale" content="en_ZW">
 <meta property="og:site_name" content="Young AI Leaders — Gweru Hub">
@@ -58,7 +60,16 @@
   .content li { margin-bottom: 8px; }
   .cta { display: inline-block; margin: 4px 8px 8px 0; padding: 10px 18px; border-radius: 8px; border: 1px solid rgba(107,232,255,.5); color: #6be8ff; text-decoration: none; font-size: 14px; background: rgba(107,232,255,.08); }
   .cta:hover { background: rgba(107,232,255,.18); }
-  @media (max-width: 640px) { .wrap { padding: 18px 16px 48px; } .photo, .avatar { width: 72px; height: 72px; font-size: 22px; } }
+  .content .lead { font-size: 17px; color: #eaf9ff; }
+  .facts { display: grid; grid-template-columns: max-content 1fr; gap: 8px 18px; margin: 0 0 16px; font-size: 15px; }
+  .facts dt { color: #6be8ff; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; padding-top: 3px; }
+  .facts dd { margin: 0; }
+  @media (max-width: 640px) {
+    .wrap { padding: 18px 16px 48px; }
+    .photo, .avatar { width: 72px; height: 72px; font-size: 22px; }
+    .facts { grid-template-columns: 1fr; gap: 2px; }
+    .facts dd { margin-bottom: 10px; }
+  }
 </style>
 </head>
 <body>

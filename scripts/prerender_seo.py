@@ -26,7 +26,8 @@ import re
 import sys
 from html import escape
 
-from site_content import ROOT, SITE_ROOT, is_external, load, person_links
+from images import largest, srcset
+from site_content import LOGO_ABS, ROOT, SHARE_IMAGE_ABS, SHARE_IMAGE_SIZE, SITE_ROOT, is_external, load, person_links
 
 INDEX_HTML = ROOT / "index.html"
 BLOG_INDEX_HTML = ROOT / "blogs" / "index.html"
@@ -73,6 +74,8 @@ def build_head_block(site):
         f'<meta property="og:title" content="{e(title)}">',
         f'<meta property="og:description" content="{e(description)}">',
         f'<meta property="og:image" content="{e(image)}">',
+        f'<meta property="og:image:width" content="{SHARE_IMAGE_SIZE[0]}">' if image == SHARE_IMAGE_ABS else None,
+        f'<meta property="og:image:height" content="{SHARE_IMAGE_SIZE[1]}">' if image == SHARE_IMAGE_ABS else None,
         f'<meta property="og:image:alt" content="{e(alt)}">' if alt else None,
         f'<meta property="og:locale" content="{e(seo.get("locale", "en_ZW"))}">',
         f'<meta property="og:site_name" content="{e(site_name)}">',
@@ -86,11 +89,19 @@ def build_head_block(site):
     return "\n".join(l for l in lines if l)
 
 
-def build_jsonld_block(site):
+def build_jsonld_block(site, team=()):
     seo = site["seo"]
     canonical = seo["canonicalUrl"]
     description = seo.get("description", "")
     image = seo.get("ogImage", "")
+    # Every person, linked to their own page by @id: ties each individual to
+    # the hub in search engines' and AI answer engines' entity graphs.
+    members = []
+    for p in team:
+        person = {"@type": "Person", "@id": f"{SITE_ROOT}/{p['page']}#person", "name": p["name"], "url": f"{SITE_ROOT}/{p['page']}"}
+        if p["role"]:
+            person["jobTitle"] = p["role"]
+        members.append(person)
     graph = [
         {
             "@type": "Organization",
@@ -98,7 +109,8 @@ def build_jsonld_block(site):
             "name": f"{site.get('brand', {}).get('name', '')} — Gweru Hub",
             "alternateName": ["Young AI Leaders Gweru", "YAL Gweru Hub"],
             "url": canonical,
-            "logo": {"@type": "ImageObject", "url": image},
+            "logo": {"@type": "ImageObject", "url": LOGO_ABS},
+            "image": image,
             "description": description,
             "sameAs": ["https://luma.com/user/yailgweru"],
             "areaServed": [{"@type": "Country", "name": "Zimbabwe"}, {"@type": "Place", "name": "Southern Africa"}],
@@ -109,6 +121,7 @@ def build_jsonld_block(site):
             },
             "knowsAbout": ["Artificial Intelligence", "Social Innovation", "Youth Empowerment", "Technology in Zimbabwe", "AI for Good", "Community Impact", "Ethical AI"],
             "memberOf": {"@type": "Organization", "name": "AI for Good (ITU)"},
+            **({"member": members} if members else {}),
         },
         {
             "@type": "WebSite",
@@ -124,11 +137,17 @@ def build_jsonld_block(site):
     return f'<script type="application/ld+json" id="ld-json">\n{payload}\n</script>'
 
 
-def build_brand_block(site, logo):
+# The brand bar shows the logo at 40px, so it uses the 96px favicon
+# (generated from assets/logo.png by make_favicons.py, ~9 KB) rather than the
+# 512px original (~100 KB).
+BRAND_LOGO = "assets/favicon/favicon-96x96.png"
+
+
+def build_brand_block(site):
     brand = site.get("brand", {})
     return (
         '<div class="brand">\n'
-        f'  <img id="brand-logo" src="{e(logo)}" alt="{e(brand.get("name", ""))} logo">\n'
+        f'  <img id="brand-logo" src="{BRAND_LOGO}" width="40" height="40" alt="{e(brand.get("name", ""))} logo">\n'
         f'  <div>\n    <div class="t1">{escape(brand.get("name", ""))}</div>\n    <div class="t2">{escape(brand.get("tagline", ""))}</div>\n  </div>\n'
         "</div>\n"
         f'<div class="hint" id="hint">{escape(site.get("hint", ""))}</div>'
@@ -136,17 +155,64 @@ def build_brand_block(site, logo):
 
 
 # ---------- sidebar panels (cloned by openSide() in index.html) ----------
-# Images use data-src so the hidden content tree doesn't download anything;
-# openSide() swaps data-src -> src when a panel opens.
+# Images use data-src / data-srcset / data-sizes so the hidden content tree
+# downloads nothing; openSide() turns them into src/srcset/sizes when a panel
+# opens. They point at tinified thumbnails (images.py), never the originals.
+
+# The sidebar's image width: min(460px, 94vw) wide minus 2 x 22px padding.
+SIDE_SIZES = "(max-width: 489px) calc(100vw - 44px), 416px"
+LUMA_RE = re.compile(r"^(https://images\.lumacdn\.com/cdn-cgi/image/)([^/]+)/(.+)$")
+
 
 def initials(name):
     return "".join(w[0] for w in name.split()[:2]).upper() or "?"
 
 
-def photo(p):
-    if p.get("image"):
-        return f'<img data-src="{e(p["image"])}" alt="{e(p["name"])}">'
+def lazy_img(variants, sizes, alt, cls="", fallback="", at_most=960, box=None):
+    """An <img> that loads when its panel opens: a srcset of thumbnails (the
+    browser picks the one its screen needs; `at_most` picks the fallback src)
+    or just `fallback` (e.g. an external URL) when there are none. `box` is
+    the displayed size, for width/height when it's fixed."""
+    c = f' class="{cls}"' if cls else ""
+    if not variants:
+        dims = f' width="{box}" height="{box}"' if box else ""
+        return f'<img{c} data-src="{e(fallback)}"{dims} alt="{e(alt)}">'
+    default = largest(variants, at_most=at_most)
+    w, h = (box, box) if box else (default["w"], default["h"])
+    return (
+        f'<img{c} data-src="{e(default["src"])}" data-srcset="{e(srcset(variants))}" data-sizes="{e(sizes)}" '
+        f'width="{w}" height="{h}" alt="{e(alt)}">'
+    )
+
+
+def photo(p, size=72):
+    if p.get("photo") or p.get("image"):
+        return lazy_img(p.get("photo"), f"{size}px", p["name"], fallback=p.get("image"), at_most=192, box=size)
     return f'<div class="avatar" aria-hidden="true">{escape(initials(p["name"]))}</div>'
+
+
+def luma_variants(url):
+    """Luma's image CDN resizes on request: ask for the sidebar's real width
+    (480/960 px) instead of the 1280 px a pasted Luma URL usually asks for."""
+    m = LUMA_RE.match(url or "")
+    if not m:
+        return []
+    opts = dict(kv.split("=", 1) for kv in m.group(2).split(",") if "=" in kv)
+    try:
+        ratio = int(opts.get("height", 360)) / int(opts.get("width", 640))
+    except ValueError:
+        return []
+    out = []
+    for w in (480, 960):
+        h = round(w * ratio)
+        o = dict(opts, width=str(w), height=str(h), dpr="1")
+        out.append({"src": m.group(1) + ",".join(f"{k}={v}" for k, v in o.items()) + "/" + m.group(3), "w": w, "h": h})
+    return out
+
+
+def hero_img(more, alt):
+    variants = more.get("images") or luma_variants(more.get("image"))
+    return lazy_img(variants, SIDE_SIZES, alt, cls="side-hero", fallback=more.get("image"))
 
 
 def social_row(p):
@@ -228,7 +294,7 @@ def people_html(more, section):
             role = f'<div class="m-role">{escape(m["role"])}</div>' if m["role"] else ""
             brief = f'<div class="m-brief">{escape(m["brief"])}</div>' if m["brief"] else ""
             out += (
-                f'<div class="member" data-person="{e(m["slug"])}">{photo(m)}'
+                f'<div class="member" data-person="{e(m["slug"])}">{photo(m, 56)}'
                 f'<button type="button" class="m-name">{escape(m["name"])}</button>{role}{brief}{social_row(m)}</div>'
             )
         out += "</div>"
@@ -281,7 +347,7 @@ def panel_html(section, item):
             goals = {g["num"]: g for pr in person["projects"] for g in pr["sdgs"]}
             out += '<div class="side-label">Works towards</div>' + sdg_chips([goals[n] for n in sorted(goals)])
     if more.get("image"):
-        out += f'<img class="side-hero" data-src="{e(more["image"])}" alt="{e(more.get("title") or item["label"])}">'
+        out += hero_img(more, more.get("title") or item["label"])
     if more.get("lead"):
         out += f"<p><strong>{escape(more['lead'])}</strong></p>"
     out += paragraphs(more.get("body", []))
@@ -368,6 +434,20 @@ def build_content(site_ns):
 
 # ---------- blog listing ----------
 
+def card_img(p):
+    """The card's thumbnail: ~400px wide in the grid (minmax(260px, 1fr))."""
+    variants = p.get("images") or []
+    if not variants:
+        src = p["image"] if is_external(p["image"]) else "../" + p["image"]
+        return f'<img src="{e(src)}" alt="{e(p["title"])}" loading="lazy" decoding="async">'
+    small = largest(variants, at_most=480)
+    return (
+        f'<img src="../{e(small["src"])}" srcset="{e(srcset(variants, "../"))}" '
+        f'sizes="(max-width: 640px) calc(100vw - 32px), 400px" width="{small["w"]}" height="{small["h"]}" '
+        f'alt="{e(p["title"])}" loading="lazy" decoding="async">'
+    )
+
+
 def build_blog_grid(posts):
     """Static cards; blogs/index.html's script filters them via their data-*
     attributes. Cards open the post in the home page's sidebar."""
@@ -386,7 +466,7 @@ def build_blog_grid(posts):
         cards.append(
             f'<a class="card" href="../#blogs/{e(p["slug"])}" data-search="{e(search.lower())}" '
             f'data-authors="{e("|".join(authors))}" data-featured="{"1" if p.get("featured") else "0"}">'
-            f'<img src="../{e(p["image"])}" alt="{e(p["title"])}" loading="lazy">'
+            f'{card_img(p)}'
             f'<div class="card-body"><h2>{escape(p["title"])}</h2><p>{escape(p.get("excerpt", ""))}</p>'
             f'<div class="meta">{meta}</div></div></a>'
         )
@@ -400,8 +480,8 @@ def main():
 
     html = INDEX_HTML.read_text(encoding="utf-8")
     new = replace_block(html, "INLINE-SEO-HEAD", build_head_block(site), INDEX_HTML)
-    new = replace_block(new, "INLINE-LD-JSON", build_jsonld_block(site), INDEX_HTML)
-    new = replace_block(new, "INLINE-BRAND", build_brand_block(site, site_ns.data.get("logo", "assets/logo.png")), INDEX_HTML)
+    new = replace_block(new, "INLINE-LD-JSON", build_jsonld_block(site, site_ns.team), INDEX_HTML)
+    new = replace_block(new, "INLINE-BRAND", build_brand_block(site), INDEX_HTML)
     new = replace_block(new, "INLINE-CONTENT", build_content(site_ns), INDEX_HTML)
     if new != html:
         INDEX_HTML.write_text(new, encoding="utf-8")

@@ -1,0 +1,35 @@
+# Young AI Leaders Gweru Hub
+
+> Youth-led AI hub in Gweru, Zimbabwe — young leaders building ethical AI, digital skills and social impact for communities across Zimbabwe and Southern Africa.
+
+Young AI Leaders Gweru Hub is a youth-led AI and technology community in Gweru, Midlands Province, Zimbabwe, and a hub of the ITU AI for Good Young AI Leaders Community. We connect young innovators across Zimbabwe and Southern Africa through ethical artificial intelligence, community technology, social innovation and hands-on AI literacy — rooted in local languages, local context and youth leadership.
+
+- Website: https://yailgweru.github.io/
+- Location: Gweru, Midlands Province, Zimbabwe
+- Network: Young AI Leaders Community, ITU's AI for Good
+- Email: yail.gweru@gmail.com
+
+## People
+
+- [Brandon T. Bande](https://yailgweru.github.io/team/brandon-t-bande.html): Brandon T. Bande (Hub Leader) is part of the leadership team of Young AI Leaders Gweru Hub, a youth-led artificial intelligence and technology community in Gweru, Midlands Province, Zimbabwe, and part of the Young AI Leaders Community under ITU's AI for Good.
+- [Linda Mapindlo](https://yailgweru.github.io/team/linda-mapindlo.html): Linda Mapindlo (Organising Team) is part of the leadership team of Young AI Leaders Gweru Hub, a youth-led artificial intelligence and technology community in Gweru, Midlands Province, Zimbabwe, and part of the Young AI Leaders Community under ITU's AI for Good.
+- [Webnergy Simango](https://yailgweru.github.io/team/webnergy-simango.html): Webnergy Simango (Organising Team) is part of the leadership team of Young AI Leaders Gweru Hub, a youth-led artificial intelligence and technology community in Gweru, Midlands Province, Zimbabwe, and part of the Young AI Leaders Community under ITU's AI for Good.
+- [Mukudzeishe Primrose Tarugarira](https://yailgweru.github.io/team/mukudzeishe-primrose-tarugarira.html): Mukudzeishe Primrose Tarugarira (Impact Leader) is part of the leadership team of Young AI Leaders Gweru Hub, a youth-led artificial intelligence and technology community in Gweru, Midlands Province, Zimbabwe, and part of the Young AI Leaders Community under ITU's AI for Good.
+
+## Projects
+
+- [AI Literacy for All](https://yailgweru.github.io/projects/ai-literacy-for-all.html): Community project (SDG 4: Quality Education). Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.
+
+## Events
+
+- [Build with AI Buildathon · Southern Africa Jam](https://luma.com/chg80xvi): Thu, Apr 30 · Midlands State University Main Campus, Room 59, Gweru. A satellite session of the regional AI buildathon.
+- [From Prompt to Production](https://luma.com/9dl4ywcf): Sat, Apr 25, 9:00 AM · American Corner, Gweru. Building applications with no-code, using Google AI Studio.
+- [Prompting Like A Pro](https://luma.com/hygxh9vr): Sat, Feb 28, 10:00 AM · American Corner, Gweru. The second session in the hub's AI Literacy series.
+- [Understanding AI Beyond the Hype](https://luma.com/umbzgb89): Feb 11 · Zoom (online). The opening session of a six-part AI Literacy series.
+- [All events on Luma](https://luma.com/user/yailgweru): Every hub event, past and upcoming, is listed on our Luma calendar — follow it to catch the next one.
+
+## Optional
+
+- [Blog](https://yailgweru.github.io/blogs/): every post, newest first
+- [RSS feed](https://yailgweru.github.io/feed.xml): blog posts with their full text
+- [Sitemap](https://yailgweru.github.io/sitemap.xml): every page on the site

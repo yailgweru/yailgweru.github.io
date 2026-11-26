@@ -2,6 +2,10 @@
   "title": "AI Literacy for All",
   "ownership": "community",
   "owners": [],
+  "members": [],
+  "sdgs": [
+    4
+  ],
   "status": "",
   "order": 1,
   "summary": "Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.",

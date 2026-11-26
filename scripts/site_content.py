@@ -34,6 +34,52 @@ GROUPS = {"leadership": "Hub leadership", "member": "Hub member"}
 OWNERSHIP = {"community": "Community project", "member": "Member project"}
 STATUSES = {"": "", "planned": "Planned", "active": "Active", "completed": "Completed"}
 
+# A person's social links: key in data/team/<slug>.json "socials" -> (label, icon in assets/icons/).
+# Listed in this order wherever they're rendered.
+SOCIALS = {
+    "linkedin": ("LinkedIn", "linkedin.svg"),
+    "x": ("X", "x.svg"),
+    "github": ("GitHub", "github.svg"),
+    "instagram": ("Instagram", "instagram.svg"),
+    "facebook": ("Facebook", "facebook.svg"),
+    "youtube": ("YouTube", "youtube.svg"),
+    "website": ("Website", "website.svg"),
+}
+MIN_SOCIALS = 2
+ITU_LINK = ("AI for Good profile", "itu.svg")
+
+# UN Sustainable Development Goals: number -> (short name, official colour).
+SDGS = {
+    1: ("No Poverty", "#E5243B"),
+    2: ("Zero Hunger", "#DDA63A"),
+    3: ("Good Health and Well-being", "#4C9F38"),
+    4: ("Quality Education", "#C5192D"),
+    5: ("Gender Equality", "#FF3A21"),
+    6: ("Clean Water and Sanitation", "#26BDE2"),
+    7: ("Affordable and Clean Energy", "#FCC30B"),
+    8: ("Decent Work and Economic Growth", "#A21942"),
+    9: ("Industry, Innovation and Infrastructure", "#FD6925"),
+    10: ("Reduced Inequalities", "#DD1367"),
+    11: ("Sustainable Cities and Communities", "#FD9D24"),
+    12: ("Responsible Consumption and Production", "#BF8B2E"),
+    13: ("Climate Action", "#3F7E44"),
+    14: ("Life Below Water", "#0A97D9"),
+    15: ("Life on Land", "#56C02B"),
+    16: ("Peace, Justice and Strong Institutions", "#00689D"),
+    17: ("Partnerships for the Goals", "#19486A"),
+}
+
+
+def sdg(num):
+    name, color = SDGS[num]
+    return {"num": num, "name": name, "label": f"SDG {num}: {name}", "color": color, "url": f"https://sdgs.un.org/goals/goal{num}"}
+
+
+def person_links(p):
+    """[(href, icon, label)] for a person's ITU profile, then their socials."""
+    links = [(p["itu"], ITU_LINK[1], ITU_LINK[0])] if p["itu"] else []
+    return links + [(s["href"], s["icon"], s["label"]) for s in p["socials"]]
+
 
 def slugify(text):
     text = re.sub(r"[^a-z0-9\s-]", "", str(text).lower()).strip()
@@ -84,15 +130,46 @@ def _read_dir(kind, errors):
     return entries
 
 
-def _person(slug, w, p, reserved, errors):
+def _person(slug, w, p, reserved, errors, warnings):
     if not p.get("name"):
         errors.append(f"{w}: 'name' is required")
     if p.get("group") not in GROUPS:
         errors.append(f"{w}: 'group' must be one of {sorted(GROUPS)}")
     if slug in reserved:
         errors.append(f"{w}: slug '{slug}' clashes with a Team section item; rename the file")
-    for key in ("linkedin", "site"):
-        errors.check_url(f"{w} {key}", p.get(key, ""))
+    for old, new in (("linkedin", "socials.linkedin"), ("site", "socials.website")):
+        if old in p:
+            errors.append(f"{w}: '{old}' has moved to '{new}'")
+
+    raw = p.get("socials") or {}
+    if not isinstance(raw, dict):
+        errors.append(f"{w}: 'socials' must be an object like {{\"linkedin\": \"https://…\"}}")
+        raw = {}
+    for key in raw:
+        if key not in SOCIALS:
+            errors.append(f"{w}: unknown social '{key}' (use one of: {', '.join(SOCIALS)})")
+    socials = []
+    for key, (label, icon) in SOCIALS.items():
+        url = (raw.get(key) or "").strip()
+        if url:
+            errors.check_url(f"{w} socials.{key}", url)
+            socials.append({"key": key, "label": label, "icon": icon, "href": url})
+
+    itu = (p.get("itu") or "").strip()
+    if itu:
+        errors.check_url(f"{w} itu", itu)
+        if is_external(itu) and not re.match(r"^https?://([a-z0-9-]+\.)*itu\.int(/|$)", itu):
+            errors.append(f"{w} itu: '{itu}' should be the person's profile on an itu.int site (e.g. aiforgood.itu.int)")
+
+    missing = []
+    if len(socials) < MIN_SOCIALS:
+        missing.append(f"{len(socials)}/{MIN_SOCIALS} socials")
+    if not itu:
+        missing.append("no ITU profile ('itu')")
+    if missing:
+        warnings.append(f"{w}: {', '.join(missing)}")
+
+    tagged = as_list(p.get("projects"))
     bio = [str(t) for t in as_list(p.get("bio"))]
     return {
         "slug": slug,
@@ -103,11 +180,26 @@ def _person(slug, w, p, reserved, errors):
         "image": errors.image(w, "team", slug, p.get("image", "")),
         "brief": p.get("brief", "") or (bio[0] if bio else ""),
         "bio": bio,
-        "linkedin": p.get("linkedin", ""),
-        "site": p.get("site", ""),
+        "socials": socials,
+        "itu": itu,
         "page": f"team/{slug}.html",
         "projects": [],
+        "_where": w,
+        "_tagged": tagged,
     }
+
+
+def _people_refs(w, field, slugs, people, errors):
+    refs, seen = [], set()
+    for slug in as_list(slugs):
+        if slug in seen:
+            continue
+        seen.add(slug)
+        if slug not in people:
+            errors.append(f"{w}: {field} '{slug}' has no data/team/{slug}.json")
+            continue
+        refs.append({"slug": slug, "name": people[slug]["name"], "page": people[slug]["page"]})
+    return refs
 
 
 def _project(slug, w, p, people, errors):
@@ -120,14 +212,20 @@ def _project(slug, w, p, people, errors):
     status = p.get("status", "") or ""
     if status not in STATUSES:
         errors.append(f"{w}: 'status' must be one of {sorted(s for s in STATUSES if s)} or blank")
-    owners = []
-    for owner in as_list(p.get("owners")):
-        if owner not in people:
-            errors.append(f"{w}: owner '{owner}' has no data/team/{owner}.json")
-            continue
-        owners.append({"slug": owner, "name": people[owner]["name"], "page": people[owner]["page"]})
+    owners = _people_refs(w, "owner", p.get("owners"), people, errors)
     if p.get("ownership") == "member" and not owners:
         errors.append(f"{w}: a member-owned project needs at least one entry in 'owners'")
+    owner_slugs = {o["slug"] for o in owners}
+    members = [m for m in _people_refs(w, "member", p.get("members"), people, errors) if m["slug"] not in owner_slugs]
+    sdgs = []
+    for num in as_list(p.get("sdgs")):
+        if isinstance(num, bool) or not isinstance(num, int) or num not in SDGS:
+            errors.append(f"{w}: sdgs entry '{num}' must be a goal number from 1 to 17")
+        elif num not in [g["num"] for g in sdgs]:
+            sdgs.append(sdg(num))
+    if not sdgs:
+        errors.append(f"{w}: 'sdgs' needs at least one UN SDG number (1–17), e.g. [4]")
+    sdgs.sort(key=lambda g: g["num"])
     links = []
     for i, link in enumerate(as_list(p.get("links"))):
         if not isinstance(link, dict) or not link.get("href"):
@@ -140,6 +238,8 @@ def _project(slug, w, p, people, errors):
         "title": p.get("title", ""),
         "ownership": p.get("ownership", "community"),
         "owners": owners,
+        "members": members,
+        "sdgs": sdgs,
         "status": status,
         "order": p.get("order", 999),
         "summary": p.get("summary", ""),
@@ -187,6 +287,10 @@ def _assemble_sections(data, team, projects, posts):
                 "detail": p["summary"],
                 "slug": p["slug"],
                 "group": "Member projects" if member else "Community projects",
+                "filters": {
+                    "sdgs": [g["num"] for g in p["sdgs"]],
+                    "people": [o["slug"] for o in p["owners"] + p["members"]],
+                },
                 "more": {
                     "kicker": OWNERSHIP[p["ownership"]],
                     "title": p["title"],
@@ -198,6 +302,13 @@ def _assemble_sections(data, team, projects, posts):
                 },
             })
         by_id["projects"]["items"] = items
+        # Options for the holo panel's SDG / person filters: only values in use.
+        used_sdgs = sorted({g["num"] for p in projects for g in p["sdgs"]})
+        used_people = {o["slug"] for p in projects for o in p["owners"] + p["members"]}
+        by_id["projects"]["filters"] = {
+            "sdgs": [sdg(n) for n in used_sdgs],
+            "people": [{"slug": t["slug"], "name": t["name"]} for t in team if t["slug"] in used_people],
+        } if projects else None
     if "team" in by_id:
         t = by_id["team"]
         t["people"] = {
@@ -217,13 +328,25 @@ def _assemble_sections(data, team, projects, posts):
 
 
 def load():
-    errors = _Errors()
+    errors, warnings = _Errors(), []
     data = json.loads((ROOT / "data.json").read_text(encoding="utf-8"))
 
     team_section = next((s for s in data["sections"] if s.get("id") == "team"), {})
     reserved = {slugify(it.get("label", "")) for it in team_section.get("items", [])}
-    people = {slug: _person(slug, w, p, reserved, errors) for slug, w, p in _read_dir("team", errors)}
+    people = {slug: _person(slug, w, p, reserved, errors, warnings) for slug, w, p in _read_dir("team", errors)}
     projects = [_project(slug, w, p, people, errors) for slug, w, p in _read_dir("projects", errors)]
+
+    # A person can also tag themselves onto a project ("projects" in their
+    # file); that makes them a team member of it unless they already own it.
+    by_slug = {pr["slug"]: pr for pr in projects}
+    for person in people.values():
+        for tag in person.pop("_tagged"):
+            pr = by_slug.get(tag)
+            if not pr:
+                errors.append(f"{person['_where']}: project '{tag}' has no data/projects/{tag}.json")
+            elif all(r["slug"] != person["slug"] for r in pr["owners"] + pr["members"]):
+                pr["members"].append({"slug": person["slug"], "name": person["name"], "page": person["page"]})
+        person.pop("_where")
 
     manifest = ROOT / "blogs" / "manifest.json"
     posts = json.loads(manifest.read_text(encoding="utf-8")) if manifest.exists() else []
@@ -236,8 +359,13 @@ def load():
 
     projects.sort(key=lambda p: (p["ownership"] != "community", p["order"], p["title"].lower()))
     for pr in projects:
-        for o in pr["owners"]:
-            people[o["slug"]]["projects"].append({"slug": pr["slug"], "title": pr["title"], "summary": pr["summary"]})
+        member_project = pr["ownership"] == "member"
+        owner_role = ("Co-owner" if len(pr["owners"]) > 1 else "Owner") if member_project else "Lead"
+        for role, refs in ((owner_role, pr["owners"]), ("Team member", pr["members"])):
+            for r in refs:
+                people[r["slug"]]["projects"].append(
+                    {"slug": pr["slug"], "title": pr["title"], "summary": pr["summary"], "role": role, "sdgs": pr["sdgs"]}
+                )
     team = sorted(people.values(), key=lambda p: (p["group"] != "leadership", p["order"], p["name"].lower()))
     posts = sorted(posts, key=lambda p: p["date"], reverse=True)
 
@@ -247,5 +375,6 @@ def load():
         team=team,
         projects=projects,
         posts=posts,
+        warnings=warnings,
         sections=_assemble_sections(data, team, projects, posts),
     )

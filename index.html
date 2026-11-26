@@ -295,7 +295,7 @@
     font-size: 11.5px; line-height: 1.55; color: rgba(222,242,250,.72);
     display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
   }
-  .social-row { display: flex; gap: 8px; margin-top: 10px; }
+  .social-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .member .social-row { justify-content: center; margin-top: 8px; }
   .social-row a {
     display: flex; align-items: center; justify-content: center;
@@ -325,6 +325,22 @@
     border: 1px solid rgba(107,232,255,.4); background: rgba(107,232,255,.08); color: #bff3ff;
   }
   .owner-list a:hover { background: rgba(107,232,255,.18); }
+  .owner-list .chip-role { margin-left: 4px; font-size: 10px; letter-spacing: .6px; text-transform: uppercase; color: #6be8ff; opacity: .85; }
+  .sdg-list { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 16px; }
+  .sdg-list a {
+    display: inline-flex; align-items: center; gap: 8px; padding: 4px 12px 4px 4px; border-radius: 999px;
+    font-size: 12px; text-decoration: none; color: #eaf9ff;
+    border: 1px solid var(--sdg); background: rgba(107,232,255,.05);
+  }
+  .sdg-list a b { display: inline-flex; align-items: center; justify-content: center; min-width: 22px; height: 22px; border-radius: 999px; background: var(--sdg); color: #fff; font-size: 11px; }
+  .sdg-list a:hover { background: rgba(107,232,255,.15); }
+  .holo-filters { display: flex; gap: 8px; padding: 10px 14px 2px; }
+  .holo-filters select {
+    flex: 1; min-width: 0; font: inherit; font-size: 12px; color: #d8f8ff; padding: 6px 8px; border-radius: 6px;
+    background: rgba(107,232,255,.08); border: 1px solid rgba(107,232,255,.35);
+  }
+  .holo-filters select option { background: #06121a; color: #eaf9ff; }
+  .holo-item[hidden], .holo-group[hidden] { display: none; }
   .side-form { display: flex; flex-direction: column; gap: 14px; margin-top: 6px; }
   .f-field { display: flex; flex-direction: column; gap: 6px; font-size: 12px; letter-spacing: .4px; color: #bff3ff; }
   .f-field input, .f-field select, .f-field textarea {
@@ -372,6 +388,7 @@
     /* keep interactive controls at a comfortably tappable size on touch screens */
     .holo-close, .side-close { width: 40px; height: 40px; font-size: 16px; }
     .holo-item-btn { padding: 13px 14px; min-height: 44px; }
+    .holo-filters select { font-size: 16px; min-height: 40px; }
     #side { width: min(460px, 100vw); }
     .side-head { padding: calc(22px + env(safe-area-inset-top)) 54px 16px 22px; }
     .side-body { padding-bottom: calc(34px + env(safe-area-inset-bottom)); }
@@ -433,8 +450,8 @@
 <article data-slug="the-hub" data-label="The hub"><h3>The hub</h3><p class="detail">A tight-knit African youth tech community of young AI leaders in Gweru, Midlands Province — collaborating on real projects with community impact across Zimbabwe and Southern Africa.</p></article>
 <article data-slug="ai-for-good-network" data-label="AI for Good network"><h3>AI for Good network</h3><p class="detail">We are the Gweru Hub of the global Young AI Leaders Community, an ITU AI for Good initiative connecting African youth tech hubs with innovators worldwide.</p></article>
 </section>
-<section id="projects" data-id="projects" data-title="Projects" data-sub="What we build" data-color="16098851" data-pos="2.4,4.6,-6" data-empty="Projects are being documented — check back soon."><h2>Projects — What we build</h2>
-<article data-slug="ai-literacy-for-all" data-label="AI Literacy for All" data-group="Community projects" data-kicker="Community project" data-title="AI Literacy for All" data-meta="Run by the hub"><h3>AI Literacy for All</h3><p class="detail">Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.</p><div class="panel"><p><strong>Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.</strong></p><p>Looking at the surrounding community, we realised that most people only used a handful of AI tools. We set out to introduce them to a wider range of tools and show what each one can do.</p><p>Using a few of those tools, we showed how AI can do far more than chat. The sessions covered tools that assist with research, study and media generation, along with techniques to get the best output from them.</p><p>We closed each session by highlighting the risks of AI and how to guard against them.</p></div></article>
+<section id="projects" data-id="projects" data-title="Projects" data-sub="What we build" data-color="16098851" data-pos="2.4,4.6,-6" data-empty="Projects are being documented — check back soon."><h2>Projects — What we build</h2><template class="filter-tpl"><div class="holo-filters"><select data-filter="sdgs" aria-label="Filter by SDG"><option value="">All SDGs</option><option value="4">SDG 4: Quality Education</option></select></div></template>
+<article data-slug="ai-literacy-for-all" data-label="AI Literacy for All" data-group="Community projects" data-sdgs="4" data-people="" data-kicker="Community project" data-title="AI Literacy for All" data-meta="Run by the hub"><h3>AI Literacy for All</h3><p class="detail">Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.</p><div class="panel"><p><strong>Online and in-person sessions that equip people with practical knowledge of AI tools and best practices.</strong></p><p>Looking at the surrounding community, we realised that most people only used a handful of AI tools. We set out to introduce them to a wider range of tools and show what each one can do.</p><p>Using a few of those tools, we showed how AI can do far more than chat. The sessions covered tools that assist with research, study and media generation, along with techniques to get the best output from them.</p><p>We closed each session by highlighting the risks of AI and how to guard against them.</p><div class="side-label">UN Sustainable Development Goals</div><div class="sdg-list"><a href="https://sdgs.un.org/goals/goal4" target="_blank" rel="noopener" style="--sdg:#C5192D" title="SDG 4: Quality Education"><b>4</b>Quality Education</a></div></div></article>
 </section>
 <section id="team" data-id="team" data-title="Team" data-sub="The leaders" data-color="15750796" data-pos="-6.4,1.8,-2.4" data-empty=""><h2>Team — The leaders</h2>
 <article data-slug="hub-leadership" data-label="Hub leadership" data-kicker="Team" data-title="Hub leadership" data-meta=""><h3>Hub leadership</h3><p class="detail">Meet the organising team and impact leadership driving tech innovation from Gweru for Zimbabwe and Southern Africa, 2025–2027.</p><div class="panel"><div class="profile" data-person="brandon-t-bande"><div class="avatar" aria-hidden="true">BT</div><div><button type="button" class="p-name">Brandon T. Bande</button><div class="p-role">Hub Leader</div><div class="p-bio"><p>Leads the Young AI Leaders Gweru Hub (2025–2027 cohort), driving Africa-facing AI and tech innovation from Gweru, Midlands Province.</p></div></div></div><div class="profile" data-person="linda-mapindlo"><div class="avatar" aria-hidden="true">LM</div><div><button type="button" class="p-name">Linda Mapindlo</button><div class="p-role">Organising Team</div><div class="p-bio"><p>Part of the hub&#x27;s organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub.</p></div></div></div><div class="profile" data-person="webnergy-simango"><div class="avatar" aria-hidden="true">WS</div><div><button type="button" class="p-name">Webnergy Simango</button><div class="p-role">Organising Team</div><div class="p-bio"><p>Part of the hub&#x27;s organising team, coordinating workshops, events and day-to-day operations for the Gweru Hub.</p></div></div></div><div class="profile" data-person="mukudzeishe-primrose-tarugarira"><div class="avatar" aria-hidden="true">MP</div><div><button type="button" class="p-name">Mukudzeishe Primrose Tarugarira</button><div class="p-role">Impact Leader</div><div class="p-bio"><p>Leads impact and community outcomes for the hub, tracking how projects translate into real, measurable change across Gweru. Also doubles as our social media manager.</p></div></div></div></div></article>
@@ -512,6 +529,8 @@ function isExternal(url) {
       slug: a.dataset.slug,
       link: a.dataset.link || '',
       group: a.dataset.group || '',
+      // Filter tags (projects): SDG numbers and the slugs of owners + team members.
+      tags: { sdgs: (a.dataset.sdgs || '').split(' ').filter(Boolean), people: (a.dataset.people || '').split(' ').filter(Boolean) },
       detail: detail ? detail.innerHTML : '',
       more: panel ? { kicker: a.dataset.kicker || '', title: a.dataset.title || a.dataset.label, meta: a.dataset.meta || '', panel: panel } : null
     };
@@ -522,6 +541,7 @@ function isExternal(url) {
       title: sec.dataset.title,
       sub: sec.dataset.sub || '',
       empty: sec.dataset.empty || '',
+      filters: sec.querySelector(':scope > template.filter-tpl'),
       color: Number(sec.dataset.color),
       pos: sec.dataset.pos.split(',').map(Number),
       items: Array.from(sec.querySelectorAll(':scope > article:not([data-hidden])')).map(readItem),
@@ -917,17 +937,25 @@ function openHolo(section) {
     empty.textContent = section.empty;
     holoItems.appendChild(empty);
   }
-  let lastGroup = null;
+  // SDG / person dropdowns, prerendered by filter_template() in prerender_seo.py.
+  let filterBar = null;
+  if (section.filters && section.items.length) {
+    filterBar = section.filters.content.firstElementChild.cloneNode(true);
+    holoItems.appendChild(filterBar);
+  }
+  let lastGroup = null, groupEl = null;
+  const rows = [];
   section.items.forEach(function (item) {
     if (item.group && item.group !== lastGroup) {
-      const g = document.createElement('div');
-      g.className = 'holo-group';
-      g.textContent = item.group;
-      holoItems.appendChild(g);
+      groupEl = document.createElement('div');
+      groupEl.className = 'holo-group';
+      groupEl.textContent = item.group;
+      holoItems.appendChild(groupEl);
       lastGroup = item.group;
     }
     const wrap = document.createElement('div');
     wrap.className = 'holo-item';
+    rows.push({ item: item, el: wrap, group: item.group ? groupEl : null });
     const btn = document.createElement('button');
     btn.className = 'holo-item-btn';
     btn.innerHTML = '<span class="dot"></span><span>' + item.label + '</span><span class="chev">' + (item.more || item.link ? '\u2192' : '\u25b6') + '</span>';
@@ -946,6 +974,28 @@ function openHolo(section) {
     wrap.appendChild(det);
     holoItems.appendChild(wrap);
   });
+  if (filterBar) {
+    const none = document.createElement('div');
+    none.className = 'holo-empty';
+    none.textContent = 'No projects match these filters.';
+    none.hidden = true;
+    holoItems.appendChild(none);
+    const applyFilters = function () {
+      const want = {};
+      filterBar.querySelectorAll('select[data-filter]').forEach(function (sel) { if (sel.value) want[sel.dataset.filter] = sel.value; });
+      let shown = 0;
+      const groupsShown = new Set();
+      rows.forEach(function (r) {
+        const ok = Object.keys(want).every(function (k) { return (r.item.tags[k] || []).indexOf(want[k]) !== -1; });
+        r.el.hidden = !ok;
+        if (ok) { shown++; if (r.group) groupsShown.add(r.group); }
+      });
+      rows.forEach(function (r) { if (r.group) r.group.hidden = !groupsShown.has(r.group); });
+      none.hidden = shown > 0;
+    };
+    filterBar.addEventListener('change', applyFilters);
+    filterBar.addEventListener('click', function (e) { e.stopPropagation(); });
+  }
   holo.classList.remove('open');
   void holo.offsetWidth;
   holo.classList.add('open');

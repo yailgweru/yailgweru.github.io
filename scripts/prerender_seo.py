@@ -26,7 +26,7 @@ import re
 import sys
 from html import escape
 
-from site_content import ROOT, SITE_ROOT, is_external, load
+from site_content import ROOT, SITE_ROOT, is_external, load, person_links
 
 INDEX_HTML = ROOT / "index.html"
 BLOG_INDEX_HTML = ROOT / "blogs" / "index.html"
@@ -150,15 +150,11 @@ def photo(p):
 
 
 def social_row(p):
-    links = []
-    if p.get("linkedin"):
-        links.append((p["linkedin"], "linkedin.svg", "LinkedIn"))
-    if p.get("site"):
-        links.append((p["site"], "website.svg", "Website"))
+    links = person_links(p)
     if not links:
         return ""
     return '<div class="social-row">' + "".join(
-        f'<a href="{e(href)}" target="_blank" rel="noopener" aria-label="{label} — {e(p["name"])}"><img data-src="assets/icons/{icon}" alt=""></a>'
+        f'<a href="{e(href)}" target="_blank" rel="noopener" title="{e(label)}" aria-label="{e(label)} — {e(p["name"])}"><img data-src="assets/icons/{icon}" alt=""></a>'
         for href, icon, label in links
     ) + "</div>"
 
@@ -173,7 +169,38 @@ def paragraphs(items, cls=""):
 
 
 def chips(links):
-    return '<div class="owner-list">' + "".join(f'<a href="{e(h)}">{escape(t)}</a>' for h, t in links) + "</div>"
+    """[(href, text)] or [(href, text, role)] -> a row of pill links."""
+    out = ""
+    for h, t, *role in links:
+        tag = f' <span class="chip-role">{escape(role[0])}</span>' if role and role[0] else ""
+        out += f'<a href="{e(h)}">{escape(t)}{tag}</a>'
+    return f'<div class="owner-list">{out}</div>'
+
+
+def sdg_chips(goals):
+    """UN SDG tags, each linking to the goal's page on sdgs.un.org."""
+    return '<div class="sdg-list">' + "".join(
+        f'<a href="{e(g["url"])}" target="_blank" rel="noopener" style="--sdg:{e(g["color"])}" title="{e(g["label"])}">'
+        f'<b>{g["num"]}</b>{escape(g["name"])}</a>'
+        for g in goals
+    ) + "</div>"
+
+
+def filter_template(filters):
+    """SDG / person dropdowns for the holo panel; openHolo() in index.html
+    clones this and filters items by their data-sdgs / data-people."""
+    if not filters or (not filters["sdgs"] and not filters["people"]):
+        return ""
+    out = '<template class="filter-tpl"><div class="holo-filters">'
+    if filters["sdgs"]:
+        out += '<select data-filter="sdgs" aria-label="Filter by SDG"><option value="">All SDGs</option>' + "".join(
+            f'<option value="{g["num"]}">{e(g["label"])}</option>' for g in filters["sdgs"]
+        ) + "</select>"
+    if filters["people"]:
+        out += '<select data-filter="people" aria-label="Filter by person"><option value="">Everyone</option>' + "".join(
+            f'<option value="{e(p["slug"])}">{escape(p["name"])}</option>' for p in filters["people"]
+        ) + "</select>"
+    return out + "</div></template>"
 
 
 def people_html(more, section):
@@ -248,7 +275,11 @@ def panel_html(section, item):
     if person:
         out += f'<div class="profile">{photo(person)}<div><div class="p-bio">{paragraphs(person["bio"] or [person["brief"]])}</div>{social_row(person)}</div></div>'
         if person["projects"]:
-            out += '<div class="side-label">Projects</div>' + chips([(f"#projects/{pr['slug']}", pr["title"]) for pr in person["projects"]])
+            out += '<div class="side-label">Projects</div>' + chips(
+                [(f"#projects/{pr['slug']}", pr["title"], pr["role"]) for pr in person["projects"]]
+            )
+            goals = {g["num"]: g for pr in person["projects"] for g in pr["sdgs"]}
+            out += '<div class="side-label">Works towards</div>' + sdg_chips([goals[n] for n in sorted(goals)])
     if more.get("image"):
         out += f'<img class="side-hero" data-src="{e(more["image"])}" alt="{e(more.get("title") or item["label"])}">'
     if more.get("lead"):
@@ -257,8 +288,15 @@ def panel_html(section, item):
     project = more.get("project")
     if project:
         if project["owners"]:
-            out += f'<div class="side-label">{"Owned by" if project["ownership"] == "member" else "Led by"}</div>'
+            if project["ownership"] == "member":
+                label = "Co-owned by" if len(project["owners"]) > 1 else "Owned by"
+            else:
+                label = "Led by"
+            out += f'<div class="side-label">{label}</div>'
             out += chips([(f"#team/{o['slug']}", o["name"]) for o in project["owners"]])
+        if project["members"]:
+            out += '<div class="side-label">Team</div>' + chips([(f"#team/{m['slug']}", m["name"]) for m in project["members"]])
+        out += '<div class="side-label">UN Sustainable Development Goals</div>' + sdg_chips(project["sdgs"])
         out += "".join(f'<a class="side-link" {link_attrs(l["href"])}>{escape(l["label"])}</a>' for l in project["links"])
     if more.get("people"):
         out += people_html(more, section)
@@ -277,6 +315,8 @@ def item_html(section, item, hidden=False):
     attrs = [f'data-slug="{e(item["slug"])}"', f'data-label="{e(item["label"])}"']
     if item.get("group"):
         attrs.append(f'data-group="{e(item["group"])}"')
+    for key, values in (item.get("filters") or {}).items():
+        attrs.append(f'data-{key}="{e(" ".join(str(v) for v in values))}"')
     if item.get("link") and not more:
         attrs.append(f'data-link="{e(item["link"])}"')
     if more:
@@ -316,6 +356,7 @@ def build_content(site_ns):
             f'\n<section id="{e(s["id"])}" data-id="{e(s["id"])}" data-title="{e(s["title"])}" data-sub="{e(s.get("sub", ""))}" '
             f'data-color="{color}" data-pos="{pos}" data-empty="{e(s.get("empty", ""))}">'
             f'<h2>{escape(s["title"])} — {escape(s.get("sub", ""))}</h2>'
+            f'{filter_template(s.get("filters"))}'
         )
         for item in s.get("items", []):
             html += "\n" + item_html(s, item)

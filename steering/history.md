@@ -2,6 +2,21 @@
 
 What changed on the site and why it mattered. Newest first.
 
+## 2026-11-26 · Live; images tinified; people optimised for search and AI answers
+- **Pushed for the first time** (`7c5b2ce`): everything built since D-22 is
+  live on https://yailgweru.github.io/.
+- Images are tinified, right-sized and loaded on demand (D-34). The first
+  visit to the home page fell from about 390 KB to 190 KB on the wire: the
+  HTML from 131 KB to 23 KB, and the brand-bar logo from 106 KB to 4 KB.
+  Team, project and blog images now ship as thumbnails with `srcset`, and
+  photos lose their EXIF/GPS data.
+- Every person page gained a quotable summary sentence, an "At a glance"
+  fact list and a fuller JSON-LD graph. The hub's Organization data lists
+  every member, and a new `llms.txt` describes the site to AI answer engines
+  (D-35).
+- Share previews now use `assets/share.jpg`, the logo on a 1200×630 white
+  card, so they're no longer cropped or shown on black.
+
 ## 2026-11-26 · People and projects tagged; SDG filters
 - Projects can be co-owned and have team members. People can tag themselves
   onto projects. Panels and pages show the links both ways, with roles

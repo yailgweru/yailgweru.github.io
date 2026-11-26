@@ -260,3 +260,36 @@ in, the build lists who is missing what but doesn't stop.
 it serves, in the AI for Good network's own terms. The SDG tags also give
 the site something to filter by as the project list grows.
 
+### D-34 · Images are tinified, right-sized and loaded on demand
+**2026-11-26 · Active (refines D-16)**
+The site never serves an original image. `scripts/images.py` makes
+tinified variants of every team photo, project image and blog image
+(JPEG or 256-colour PNG, whichever is smaller; EXIF and GPS data stripped)
+at the sizes each spot displays, and every `<img>` lists them in a
+`srcset`. Sidebar images load only when their panel opens; post images
+load lazily. The favicons are tinified, the brand-bar logo is the 96px
+favicon (4 KB instead of the 106 KB original), and the 3D logo texture
+moved out of `index.html` into `assets/logo-texture.js`, loaded only by the
+scene. Share images are still the logo (D-16), now centred on a 1200×630
+white card, `assets/share.jpg`, so previews show all of it on any
+background.
+**Why:** the hub lead's call — visitors are mostly on phones with limited
+data. A first visit fell from about 390 KB to 190 KB on the wire (Three.js
+is 121 KB of what's left), and a full-size phone photo can no longer end up
+in a 72px avatar.
+
+### D-35 · Every person is optimised for search and AI answers (SEO/GEO)
+**2026-11-26 · Active (builds on D-27 and D-33)**
+Each person page opens with one factual sentence built from their data
+(role, hub, Gweru, the AI for Good network, projects, SDGs), has an "At a
+glance" fact list, and carries a JSON-LD graph: `ProfilePage` with
+created/updated dates, `Person` with a stable `@id`, photo, `sameAs`
+profiles and `memberOf` the hub, and a `BreadcrumbList`. The home page's
+Organization lists every person as a `member`. A generated `llms.txt`
+gives AI answer engines one line per person, project, post and event, and
+`sitemap.xml` lists each person's photo. The build flags people without a
+photo or with a bio under 40 words, alongside the ITU/social check (D-33).
+**Why:** the hub lead asked to maximise SEO and GEO for each individual
+added. Search engines and answer engines describe a person well only when
+the page states plain facts, connects them to the same person elsewhere
+(`sameAs`) and to the hub, and stays fresh.

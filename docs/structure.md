@@ -21,7 +21,7 @@ summarizes how the pieces relate.
 | `team/*.html`, `projects/*.html` (SEO landing pages, not linked) | `scripts/build_pages.py` |
 | `blogs/<slug>.html`, `blogs/manifest.json`, `assets/blogs/<slug>/` | `scripts/publish_blog.py` |
 | `firebase/firestore.rules` | `scripts/build_form_rules.py` |
-| Marker blocks in `index.html` (incl. the `#hub-content` tree) and `blogs/index.html` | `prerender_seo.py`, `inline_logo.py` |
+| Marker blocks in `index.html` (incl. the `#hub-content` tree) and `blogs/index.html` | `prerender_seo.py` |
 | `feed.xml` (RSS) | `scripts/build_feed.py` |
 | `sitemap.xml` | `scripts/build_sitemap.py` |
 | `assets/favicon/*` | `scripts/make_favicons.py` |

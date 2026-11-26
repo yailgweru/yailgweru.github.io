@@ -71,12 +71,14 @@ That breaks down into:
 - **Real over aspirational.** Show only real projects, events, people and
   posts. No placeholders or test data on the live site.
 - **Every real thing gets a page.** People, projects and posts each get a
-  canonical URL, structured data and a sitemap entry.
+  canonical URL, structured data and a sitemap entry. People are also
+  written up for AI answer engines (D-35).
 - **Only compiled output is published.** Markdown drafts stay local; GitHub
   Pages serves the HTML (D-24).
-- **Usable on phones and fast.** Pinch-zoom stays enabled, form inputs are
-  16px so iOS doesn't zoom, and the Firebase SDK loads only when someone
-  submits a form.
+- **Usable on phones and fast, on little data.** Pinch-zoom stays enabled,
+  form inputs are 16px so iOS doesn't zoom, the Firebase SDK loads only when
+  someone submits a form, and images are tinified thumbnails that load only
+  when they're needed (D-34).
 
 ## Where things stand (2026-11-26)
 
@@ -85,8 +87,7 @@ That breaks down into:
   4 events, all in the past (Feb to Apr 2026).
 - **Forms:** built, but showing an email fallback until a Firebase project
   is connected (Q11).
-- **Unpushed:** all of this work is committed locally and nothing has been
-  pushed to the live site.
+- **Live:** first pushed on 2026-11-26; GitHub Pages serves `main`.
 
 ## Open questions
 

@@ -133,7 +133,7 @@ def build_jsonld_block(site):
             "logo": {"@type": "ImageObject", "url": image},
             "description": description,
             "sameAs": ["https://luma.com/user/yailgweru"],
-            "areaServed": {"@type": "Country", "name": "Zimbabwe"},
+            "areaServed": [{"@type": "Country", "name": "Zimbabwe"}, {"@type": "Place", "name": "Southern Africa"}],
             "location": {
                 "@type": "Place",
                 "name": "Gweru",

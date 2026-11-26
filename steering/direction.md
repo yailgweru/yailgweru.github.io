@@ -1,8 +1,9 @@
 # Site direction
 
-> **Status: draft, inferred from the repo on 2026-11-26. Not yet confirmed.**
-> Edit this file in place as decisions get made. When an open question is
-> answered, record it in [decisions.md](decisions.md) and remove it here.
+> **Status: confirmed by the hub lead on 2026-11-26**, apart from the open
+> questions at the bottom. Edit this file in place as decisions get made.
+> When an open question is answered, record it in
+> [decisions.md](decisions.md) and remove it here.
 
 ## What the site is
 
@@ -16,128 +17,96 @@ Africa's challenges.
 
 ## What the site is for
 
-This order is inferred from where the work has gone:
+**Credibility and visibility, with heavy emphasis on SEO** (D-22). The site
+has to show partners, sponsors, members and the global network that the hub
+is real and active, and it has to be found in search. When two options are
+otherwise equal, pick the one that is better for search and for credibility.
 
-1. **Show the hub is real and active.** Partners, sponsors and the global
-   network look for leadership, events, partners and posts.
-2. **Get found.** The hub should rank for youth and AI searches about Gweru,
-   Zimbabwe and Africa. SEO has had more investment than any other area.
-3. **Send people to events.** Luma holds events and registration, and the
-   site links to it.
-4. **Give the hub a voice.** Members write for the blog.
-5. **Recruit.** Members, volunteers and partners ("Join the hub", "Get
-   involved", "Become a partner").
+That breaks down into:
+
+1. **Show the hub is real.** Real leadership, members, projects, events and
+   partners, each with its own page.
+2. **Get found** for youth, AI and tech searches about **Zimbabwe, Gweru and
+   Southern Africa** (D-23).
+3. **Turn interest into contact.** People join the hub and organisations
+   request partnerships through forms (D-29).
+4. **Send people to events** on Luma.
 
 ## Who it's for
 
-- Young people in Gweru and the Midlands, especially students. They are
-  potential members and attendees.
-- Partners and institutions such as American Corner Gweru, Midlands State
+- Young people in Gweru and the Midlands, especially students: potential
+  members and attendees.
+- Partners and institutions, such as American Corner Gweru, Midlands State
   University, sponsors and speakers.
 - The wider Young AI Leaders / AI for Good network.
-- Search engines, treated as a first-class reader: everything is also
-  available as plain HTML.
+- Search engines, treated as a first-class reader.
 
 ## The experience
 
 - The home page is a 3D night-city scene. Each section is a floating anchor
-  that opens a "hologram" panel. This is the site's signature look.
-- Everything in the scene also exists as crawlable HTML. Every view has a
-  shareable link, such as `#team` or `#blogs/<slug>`.
-- Blog posts are read inside the hologram panel. The static post pages are
-  the canonical copies that search engines index.
+  that opens a "hologram" panel.
+- **Every person and every project has its own page** with its own URL, and
+  also appears in the hologram sidebar with its own deep link (D-27).
+- Projects come in two kinds, **community-owned** (run by the hub) and
+  **member-owned** (owned by individual members), and the list is expected to
+  grow (D-26).
+- Everything in the scene also exists as crawlable HTML.
 
 ## Principles
 
-These follow from past decisions (see [decisions.md](decisions.md)):
-
-- **Simple to run.** Static files on GitHub Pages, with no build step and no
-  framework, so a small volunteer team can maintain it.
-- **One source of truth per kind of content.** `data.json` holds site copy,
-  `blogs/` holds posts and Luma holds events.
+- **Simple to run.** Static files on GitHub Pages, no framework and no
+  server. Small Python scripts regenerate everything with
+  `python scripts/update_site.py`.
+- **One source of truth per kind of content.** `data.json` holds site copy
+  and forms, `data/team/` and `data/projects/` hold people and projects (one
+  file each), the local blog drafts hold posts, and Luma holds events.
 - **Real over aspirational.** Show only real projects, events, people and
-  posts. In July, placeholder projects and unpublished "phantom" posts were
-  removed in favour of the one real project.
-- **Crawlable and shareable.** Crawlers and readers without JavaScript see
-  what the 3D scene shows.
-- **Usable on phones.** Pinch-zoom stays enabled. The layout has a 640px
-  breakpoint and safe-area padding.
-- **Fast.** The site uses system fonts and no font CDN. Three.js is its only
-  CDN dependency.
+  posts. No placeholders or test data on the live site.
+- **Every real thing gets a page.** People, projects and posts each get a
+  canonical URL, structured data and a sitemap entry.
+- **Only compiled output is published.** Markdown drafts stay local; GitHub
+  Pages serves the HTML (D-24).
+- **Usable on phones and fast.** Pinch-zoom stays enabled, form inputs are
+  16px so iOS doesn't zoom, and the Firebase SDK loads only when someone
+  submits a form.
 
 ## Where things stand (2026-11-26)
 
-- The site went live on 2026-07-18 with a Google Search Console
-  verification file.
-- The last change was on 2026-07-22, so nothing has been updated in four
-  months.
-- Content: 1 blog post (dated 2026-03-01), 1 project, 4 events (all past,
-  Feb to Apr 2026), 4 leaders (no photos or profile links) and 1 member, who
-  is a test entry.
-- Contact: one email address. The social media copy mentions LinkedIn, X and
-  Instagram but links to none of them.
+- **Content:** 4 leaders (no photos or profile links yet), no members yet,
+  1 community project, no blog posts (the launch post was removed), and
+  4 events, all in the past (Feb to Apr 2026).
+- **Forms:** built, but showing an email fallback until a Firebase project
+  is connected (Q11).
+- **Unpushed:** all of this work is committed locally and nothing has been
+  pushed to the live site.
 
 ## Open questions
 
-Where I have a recommendation, it's given.
+**Q7. Where blog posts come from.** The answer given was "Blogs come from
+Luma page", and it needs one more detail. Does it mean: (a) each Luma event
+gets a write-up as a blog post, (b) event details should be pulled
+automatically from Luma into the Events section, or (c) something else? Who
+writes and publishes the posts?
 
-### Fixes
+**Q10. Team presence.** The photo folder (`assets/team/`) is ready. Still
+needed: photos, LinkedIn or website links for the leaders, the real member
+list, and the hub's social media URLs (the Contact section mentions
+LinkedIn, X and Instagram but links to none of them).
 
-**Q1. GitHub Pages publishes internal files.** The repo has no `.nojekyll`
-or `_config.yml`, so GitHub Pages runs Jekyll, which turns Markdown into
-pages. These are live now: `/CLAUDE.html`, `/docs/architecture.html`,
-`/scripts/publish_blog.py`, and `/blogs/launching-the-gweru-hub.html`. That
-last one is a second copy of the real post, built from its `.md` source,
-which search engines see as duplicate content. `steering/` will be published
-the same way on the next push.
-*Recommendation:* add a `_config.yml` that excludes `CLAUDE.md`, `docs/`,
-`scripts/`, `steering/` and `blogs/*.md` from the deployed site.
+**Q11. Firebase project.** Someone needs to create the Firebase project (or
+choose an existing one), paste its web config into `data.json`, and deploy
+the generated rules. See `CLAUDE.md` → "Forms". Also: who reads
+submissions, and should new submissions send an email notification? That
+would need a Firebase extension such as Trigger Email.
 
-**Q2. Gitignored files are tracked anyway.** `scripts/publish_blog.py` and
-`docs/` were committed on 2026-07-16 (`d1a13ff`), and the ignore rule has no
-effect on files that are already tracked.
-*Recommendation:* commit `publish_blog.py` on purpose, so any team member can
-publish, and drop the "local-only" policy in `CLAUDE.md`. Fold `docs/` into
-`steering/` or delete it, because `docs/structure.md` still describes the old
-`submissions/` folder.
+**Q12. Other Markdown files are still public.** Drafts no longer get
+pushed, but GitHub Pages' Jekyll still publishes the committed `CLAUDE.md`,
+`docs/*.md` and `steering/*.md` as pages (`/CLAUDE.html`,
+`/steering/direction.html`, …).
+*Recommendation:* add a `_config.yml` with
+`exclude: [CLAUDE.md, docs, steering, scripts, data]` so they stay in the
+repo but off the website.
 
-**Q3. Blog post leftovers.** The title reads "Reflecting on the launch the
-Gweru Hub" (missing "of"), and the slug has the same wording. The source file
-is `launching-the-gweru-hub.md`, but the page is
-`reflecting-on-the-launch-the-gweru-hub.html`. Two orphaned image folders
-remain in `assets/blogs/`: `launching-the-gweru-hub/` and
-`reflecting-on-the-aunch-the-gweru-hub/`.
-*Recommendation:* fix the title text but keep the URL, because it's indexed
-and GitHub Pages can't redirect. Rename the source `.md` to match the page
-and delete the orphaned folders.
-
-**Q4. Test data is live.** "Tanaka Moyo (test)" appears on the site as a
-member.
-*Recommendation:* remove it now and add real members when you have them.
-
-**Q5. Copy typos.** Two sentences are missing a dash ("Midlands Province
-collaborating" and "Zimbabwe a growing"). "Equiping" should be "equipping".
-The project is described in the past tense ("sessions that focused on").
-
-### Direction (your call)
-
-**Q6. The site's main job.** Is it mainly there to build credibility with
-partners, to drive event sign-ups, or to publish members' writing? The
-answer decides what goes on top and what gets maintained.
-
-**Q7. Keeping it current.** The events and the blog haven't been updated
-since July. Who updates what, and how often? One option is to name an owner
-per section. Another is to stop hand-copying event details and rely on the
-Luma link.
-
-**Q8. SEO focus.** The keywords target pan-African terms ("tech Africa",
-"Afrotech"), where competition is heavy.
-*Recommendation:* lead with Gweru, Midlands and Zimbabwe terms the hub can
-win, and keep Africa as secondary.
-
-**Q9. Projects.** There is one project today. Will more come back, such as
-the removed ideas (AI for agriculture, Shona/Ndebele learning materials), or
-should the section stay small and real?
-
-**Q10. Team presence.** Do you want photos and LinkedIn links for the
-leaders, a real member list, and real social media URLs?
+**Events are out of date.** All four listed events are in the past. Add the
+next ones from <https://luma.com/user/yailgweru>, or say if the Events
+section should only link to Luma (see Q7).

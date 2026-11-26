@@ -39,7 +39,7 @@ Posts are written in Markdown and compiled to `blogs/<slug>.html` by
 and needs nothing but an HTTP GET.
 
 ### D-05 · `blogs/` is the only home for blog content
-**2026-07-17 · Active (supersedes the original `submissions/` folder)**
+**2026-07-17 · Active, amended by D-24 (supersedes the original `submissions/` folder)**
 The Markdown source and the compiled HTML both live in `blogs/`. The three
 "stories" hardcoded in `data.json` were removed; two of them had never been
 published.
@@ -47,12 +47,12 @@ published.
 posts that didn't exist as real pages.
 
 ### D-06 · Publish script kept local-only
-**2026-07-16 · Under review (Q2)**
+**2026-07-16 · Superseded by D-25**
 `scripts/publish_blog.py` is in `.gitignore` as a local working tool.
 **Reality:** it has been tracked since `d1a13ff` and is publicly served.
 
 ### D-07 · `docs/` kept local-only
-**2026-07-16 · Under review (Q2)**
+**2026-07-16 · Superseded by D-25**
 Architecture notes in `docs/` were meant to stay out of the repo.
 **Reality:** they are tracked, publicly served and partly out of date.
 
@@ -97,7 +97,7 @@ into the static HTML, and the runtime rebuilds identical output.
 almost no content.
 
 ### D-14 · Blended Gweru, Zimbabwe and Africa positioning
-**2026-07-18 · Active (Q8 suggests rebalancing)**
+**2026-07-18 · Superseded by D-23**
 The title, h1 and description mix local terms (Gweru, Zimbabwe) with
 continental ones (Africa).
 **Why:** to reach searches beyond Gweru.
@@ -147,3 +147,73 @@ accessibility checks.
 `steering/` holds direction, decisions and history, alongside `CLAUDE.md`.
 **Why:** decisions were scattered across commit messages and local-only
 notes. This folder gives them one home that is easy to change.
+
+---
+
+Decisions D-22 to D-29 were made by the hub lead on 2026-11-26, answering
+open questions Q1 to Q9.
+
+### D-22 · The site exists for credibility and visibility, with heavy SEO
+**2026-11-26 · Active (answers Q6)**
+The site's main job is to make the hub credible and findable. Search
+visibility weighs heavily in every content and structure decision.
+**How to apply:** when two options are otherwise equal, pick the one that is
+better for search and for credibility. Real entities get their own indexable
+pages.
+
+### D-23 · SEO targets Zimbabwe and Southern Africa
+**2026-11-26 · Active (supersedes D-14, answers Q8)**
+The title, h1, description, intro and keywords lead with Zimbabwe, Gweru and
+Southern Africa instead of broad pan-African terms. The Organization's
+`areaServed` lists Zimbabwe and Southern Africa.
+**Why:** these are searches a Gweru hub can realistically rank for.
+
+### D-24 · Blog drafts stay local; only compiled HTML is pushed
+**2026-11-26 · Active (amends D-05, answers Q1)**
+`blogs/*.md` and `blogs/images/` are gitignored. `publish_blog.py` converts a
+draft into `blogs/<slug>.html`, and only that output, its images and the
+manifest are committed.
+**Why:** GitHub Pages' Jekyll had published a pushed draft as a duplicate,
+unlinked copy of its own post.
+**Trade-off:** drafts aren't backed up by git, so authors keep their own
+copies.
+
+### D-25 · The publish script and `docs/` are tracked on purpose
+**2026-11-26 · Active (supersedes D-06 and D-07, answers Q2)**
+Both came off `.gitignore`. They had been tracked since `d1a13ff` anyway.
+`docs/` was refreshed so it no longer contradicts `CLAUDE.md`.
+
+### D-26 · Projects grow, as community-owned or member-owned
+**2026-11-26 · Active (answers Q9)**
+Every project is either `community` (run by the hub, optionally with leads)
+or `member` (owned by one or more members, linked to their profiles).
+Community projects list first, and each group has its own header.
+**Why:** to credit members' own work while keeping hub-run work distinct.
+
+### D-27 · Every person and project has its own page and its own sidebar link
+**2026-11-26 · Active**
+`build_pages.py` generates `team/<slug>.html` and `projects/<slug>.html` with
+their own canonical URLs and JSON-LD, all listed in `sitemap.xml`. The same
+entries open in the hologram sidebar at `#team/<slug>` and `#projects/<slug>`.
+`sitemap.xml` is now generated from every real page (`build_sitemap.py`).
+**Why:** credibility and SEO (D-22). People and projects become shareable and
+indexable on their own.
+
+### D-28 · One file per person and project, plus photo folders
+**2026-11-26 · Active**
+People live in `data/team/<slug>.json` and projects in
+`data/projects/<slug>.json`; the filename is the slug. Photos for leaders and
+members alike go in `assets/team/<slug>.*`, and project images (optional) in
+`assets/projects/<slug>.*`. Both are picked up automatically.
+**Why:** adding a person or project means adding one file, with no editing of
+a large shared JSON.
+
+### D-29 · Join and partnership requests go through Firebase forms
+**2026-11-26 · Active (setup pending, Q11)**
+"Join the hub" and "Become a partner" are forms defined in `data.json` that
+write to Cloud Firestore. `build_form_rules.py` generates create-only
+security rules from the same definitions, and the Firestore lite SDK loads
+only when someone submits. Until the Firebase config is filled in, the forms
+show an email fallback.
+**Why:** structured requests instead of loose emails, with no server to run.
+

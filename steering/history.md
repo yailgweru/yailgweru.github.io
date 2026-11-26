@@ -2,6 +2,24 @@
 
 What changed on the site and why it mattered. Newest first.
 
+## 2026-11-26 · Direction set: credibility, SEO, people and projects
+The hub lead answered the first round of open questions (decisions D-22 to
+D-29):
+- **Removed:** the launch reflection post with all its leftovers, and the
+  live test member.
+- **Copy:** fixed typos, and refocused SEO on Zimbabwe and Southern Africa.
+- **Repo:** blog drafts are now local-only, and `publish_blog.py` and
+  `docs/` are tracked on purpose.
+- **People and projects:** moved into one-file-per-entry folders
+  (`data/team/`, `data/projects/`). Each gets its own page and sidebar
+  deep link, and projects are split into community-owned and member-owned.
+- **Forms:** "Join the hub" and "Become a partner" are Firebase-backed
+  forms with generated Firestore rules. They're waiting on a Firebase
+  project.
+- **Sitemap:** now generated from every real page.
+
+Nothing was pushed yet.
+
 ## 2026-11-26 · Steering folder
 Added `steering/` (direction, decisions, history). An audit of the repo found
 the issues listed as open questions Q1 to Q5 in `direction.md`.

@@ -25,5 +25,5 @@ what to build and why.
 ## Visibility
 
 These files are committed, so they're visible in the repo. Until open
-question Q1 in `direction.md` is resolved, GitHub Pages also publishes them
+question Q12 in `direction.md` is resolved, GitHub Pages also publishes them
 on the live site as pages (for example `/steering/direction.html`).

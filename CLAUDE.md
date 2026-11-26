@@ -36,12 +36,17 @@ reloading is enough, same as before.
 for quick local checks with no server at all — but it's a degraded mode,
 not the primary workflow:
 
-- `fetch('data.json')` fails under `file://`, so `index.html` falls back
-  to an inline copy embedded in a generated `<script id="site-data">`
-  block (marked `INLINE-DATA:START`/`END`). That block is stale the
-  moment `data.json` changes — run `python scripts/inline_data.py` to
-  resync it before checking a `data.json` edit under `file://`. Under a
-  real server this fallback is never used.
+- Browsers block `fetch()` under `file://` and log every attempt as a
+  CORS error, so when `location.protocol` is `file:` the page doesn't
+  try: it reads `data.json` from an inline copy embedded in a generated
+  `<script id="site-data">` block (marked `INLINE-DATA:START`/`END`) and
+  logs one `console.info` line saying so. That block is stale the moment
+  `data.json` changes — run `python scripts/update_site.py` before
+  checking an edit under `file://`. Under a real server this fallback is
+  only used if the live fetch fails.
+- The `<link rel="manifest">` (web app manifest) is added by a tiny inline
+  script only over `http(s)`, for the same reason — under `file://` the
+  browser's own manifest request would be blocked and logged.
 - The three manifests (`blogs/`, `team/`, `projects/manifest.json`) fall
   back the same way, to a generated `<script id="site-manifests">`
   block (`INLINE-MANIFESTS:START`/`END`), so Team and Projects work

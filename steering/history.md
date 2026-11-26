@@ -2,6 +2,16 @@
 
 What changed on the site and why it mattered. Newest first.
 
+## 2026-11-26 · Lite view; no more endless spinner
+- The home page gained a lite view (D-36): the same content as a plain
+  page, without 3D. Phones on Data Saver, 2G or ≤1 GB of RAM get it
+  automatically, and every visitor can switch between the views.
+- Fixed: when Three.js couldn't load, the page spun forever. Now it falls
+  back to the lite view, as it does when WebGL is missing or the GPU drops
+  the 3D scene, and a slow load offers the lite view after 6 seconds.
+- Without JavaScript the home page now shows its content instead of a
+  spinner.
+
 ## 2026-11-26 · Live; images tinified; people optimised for search and AI answers
 - **Pushed for the first time** (`7c5b2ce`): everything built since D-22 is
   live on https://yailgweru.github.io/.

@@ -7,9 +7,11 @@ Young AI Leaders Gweru Hub, a static site served from GitHub Pages at
 ## What this is
 
 A no-build, static site. `index.html` is a single-page app: a Three.js
-night-city scene (loaded from a CDN `<script>` tag) with floating "anchor"
-nodes for each content section, and a hologram sidebar that shows each
-item's full content.
+night-city scene (loaded from a CDN, in the 3D view only) with floating
+"anchor" nodes for each content section, and a hologram sidebar that shows
+each item's full content. Phones on Data Saver, 2G or ≤1 GB of RAM get the
+**lite view** instead: the same content as a plain page, with no 3D (see
+"Lite view").
 
 **The JSON files are for updating the site only — the browser never reads
 them** (steering D-30). You edit:
@@ -267,6 +269,39 @@ remove its entry from `blogs/manifest.json`, run `update_site.py`, commit.
 GitHub Pages runs Jekyll, which turns any pushed `.md` file into a public
 page — a pushed draft became a duplicate, unlinked copy of its own post.
 Keeping drafts out of git means only the compiled page is ever public.
+
+## Lite view (no 3D)
+
+`index.html` has two views of the same `#hub-content` tree (steering D-36):
+
+- **3D view**: the night-city scene + hologram sidebar, as above.
+- **Lite view**: the `#hub-content` tree itself, made visible and styled as
+  a page (CSS under `.view-lite`). No Three.js, no WebGL, no 3D textures:
+  about 36 KB on the wire with Data Saver on, vs. ~190 KB for the 3D view.
+  Panels show inline; forms work in place; a person card opens that
+  person's panel in the sidebar; posts show their excerpt with a "Read the
+  full post" button; images load lazily (or, on Data Saver/2G, only after
+  "Show images"); deep links scroll to their section/item.
+
+**Which view:** a small script at the top of `<head>` decides before
+anything downloads. The lite view is the default with Data Saver on, on
+2G-class connections and on devices reporting ≤1 GB of RAM; otherwise 3D.
+Each view has a switch ("Lite view" in 3D, "Switch to the 3D view" in lite)
+that loads `?view=lite` / `?view=3d`; the choice is remembered in
+`localStorage` (`hub-view`) and the parameter is stripped from the URL.
+Test either view with those parameters.
+
+**Falling back:** the 3D view loads Three.js itself. If that fails
+(offline, a blocked CDN), WebGL isn't available, the scene throws, or the
+WebGL context is lost and not restored within 5 seconds, the page switches
+to the lite view in place with a note saying why. After 6 seconds of
+loading, the loader offers "Slow connection? Open the light version".
+Without JavaScript the page is the lite view (`<html class="view-lite">` is
+the default; the head script swaps it to `view-3d`), which covers Opera
+Mini–style browsers too.
+
+Because the lite view shows the prerendered panels as page content, panel
+markup has to read well inline as well as in the sidebar.
 
 ## Read-more sidebar (data-driven)
 
@@ -608,8 +643,9 @@ Built for visitors on slow, expensive mobile data (steering D-34):
 - Blog pages (`scripts/_blog_template.html`, `blogs/index.html`) are plain
   responsive HTML/CSS with a single `max-width` wrapper and a 640px
   breakpoint — no JS layout logic, so they can't break on odd viewports.
-- When changing any layout CSS, check both the home page (3D scene) and a
-  blog post at a narrow width (≈375px) and a short one (≈650px tall) —
+- When changing any layout CSS, check the home page in both views (3D, and
+  `?view=lite`) and a blog post at a narrow width (≈375px; the 3D view's
+  controls must also fit at 320px) and a short one (≈650px tall) —
   the home page in particular is easy to break on short viewports since
   the canvas is `position: fixed; inset: 0`.
 
@@ -628,6 +664,9 @@ Built for visitors on slow, expensive mobile data (steering D-34):
 - Don't make the page read JSON at runtime, and don't link to the
   standalone person/project/post pages — render content into
   `#hub-content` and link with `#<section>/<slug>` deep links.
+- Don't make content depend on the 3D view: everything must work in the
+  lite view (and read sensibly without JavaScript), since that's what
+  low-end phones, Data Saver users and failed 3D loads get.
 - Don't add a build step, framework, or package.json unless there's a
   concrete reason — the zero-build-step property is intentional.
 - Don't hand-edit the generated blocks — `INLINE-SEO-HEAD`,

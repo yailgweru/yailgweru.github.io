@@ -293,3 +293,20 @@ photo or with a bio under 40 words, alongside the ITU/social check (D-33).
 added. Search engines and answer engines describe a person well only when
 the page states plain facts, connects them to the same person elsewhere
 (`sameAs`) and to the hub, and stays fresh.
+
+### D-36 · A lite view (no 3D) for low-end phones, Data Saver and failed 3D loads
+**2026-11-26 · Active**
+The home page has two views of the same prerendered content. The 3D view is
+the night-city scene. The lite view is the `#hub-content` tree shown as a
+plain page: no Three.js, no WebGL, and images only on request when saving
+data. A script at the top of `<head>` picks the lite view before anything
+downloads when Data Saver is on, the connection is 2G-class or the device
+reports ≤1 GB of RAM. Visitors can switch either way, and the choice is
+remembered. The 3D view falls back to the lite view in place if Three.js
+can't load, WebGL is missing, the scene fails, or the GPU drops the context
+for good, and a slow load offers the lite view after 6 seconds. Without
+JavaScript the page is the lite view.
+**Why:** the hub lead's call, after asking about performance on limited RAM
+and data. It also fixes a real bug: when the Three.js CDN failed, the page
+showed a loading spinner forever with no content. The lite view costs about
+36 KB on the wire with Data Saver on, against ~190 KB for the 3D view.

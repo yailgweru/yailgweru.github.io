@@ -44,7 +44,9 @@ That breaks down into:
 ## The experience
 
 - The home page is a 3D night-city scene. Each section is a floating anchor
-  that opens a "hologram" panel.
+  that opens a "hologram" panel. Low-end phones, Data Saver users and
+  failed 3D loads get the lite view instead: the same content as a plain
+  page (D-36).
 - **The sidebar is where everything is read.** People, projects, posts,
   events and forms all open there, each with its own deep link
   (`#team/<slug>`, `#projects/<slug>`, …).

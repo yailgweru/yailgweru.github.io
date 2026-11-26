@@ -2,6 +2,18 @@
 
 What changed on the site and why it mattered. Newest first.
 
+## 2026-11-26 · People and projects tagged; SDG filters
+- Projects can be co-owned and have team members. People can tag themselves
+  onto projects. Panels and pages show the links both ways, with roles
+  (D-33).
+- Projects carry UN SDG tags, shown as coloured chips and added to their
+  JSON-LD. The Projects panel filters by SDG and by person. AI Literacy for
+  All is tagged SDG 4 (Quality Education).
+- Person profiles take an ITU profile and up to 7 social links (LinkedIn, X,
+  GitHub, Instagram, Facebook, YouTube, website). The build lists each
+  profile still missing its ITU link or 2 socials. All four leaders are
+  missing both for now.
+
 ## 2026-11-26 · Content rendered at build time; RSS feed
 - The JSON files became build inputs only (D-30). The build renders every
   section, item and sidebar panel into `index.html`, and the page builds

@@ -247,3 +247,16 @@ every build. Items link to `#blogs/<slug>`, and page heads advertise the feed
 for autodiscovery.
 **Why:** lets readers and aggregators follow the hub's posts.
 
+### D-33 · People and projects are cross-tagged, with SDGs, co-owners and required profiles
+**2026-11-26 · Active**
+Projects can have several `owners` (co-ownership) plus `members` (people who
+work on them without owning them), and a person can tag themselves onto a
+project from their own file. Every link shows on both sides, with the
+person's role. Every project carries at least one UN SDG tag, and the
+Projects holo panel filters by SDG and by person. Every person needs an ITU
+(AI for Good) profile and at least 2 social links. Until those are filled
+in, the build lists who is missing what but doesn't stop.
+**Why:** credibility. Each project shows who built it and which global goals
+it serves, in the AI for Good network's own terms. The SDG tags also give
+the site something to filter by as the project list grows.
+

@@ -97,8 +97,8 @@ automatically from Luma into the Events section, or (c) something else? Who
 writes and publishes the posts?
 
 **Q10. Team presence.** The photo folder (`assets/team/`) is ready. Still
-needed: photos, LinkedIn or website links for the leaders, the real member
-list, and the hub's social media URLs (the Contact section mentions
+needed: photos, each leader's ITU profile URL and at least 2 social links
+(D-33; the build lists who is missing what), the real member list, and the hub's social media URLs (the Contact section mentions
 LinkedIn, X and Instagram but links to none of them).
 
 **Q11. Firebase project.** Someone needs to create the Firebase project (or

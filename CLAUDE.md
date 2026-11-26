@@ -93,7 +93,7 @@ assets/
   logo.png                # source logo — regenerate favicons from this if it changes
   favicon/                  # generated favicon set + site.webmanifest
   fonts/                     # self-hosted fonts live here if/when added
-  icons/                      # hand-authored sidebar icons (linkedin.svg, website.svg)
+  icons/                      # hand-authored sidebar icons (social links + itu.svg)
   team/<slug>.jpg              # photos for leadership AND members (auto-detected by slug)
   projects/<slug>.jpg          # optional project images (auto-detected by slug)
   blogs/<slug>/                # hero + inline images per blog post (copied by publish_blog.py)
@@ -282,7 +282,7 @@ The `more` fields you can set in `data.json`:
   `all` as both. Every card opens that person's own panel
   (`#team/<slug>`, with a back button to the list). A blank photo falls
   back to an initials avatar;
-  `linkedin`/`site` render as an icon-link row. `more.empty` is shown when
+  `itu` and `socials` render as an icon-link row. `more.empty` is shown when
   the requested group has nobody in it yet.
 - `more.form` — renders a form that writes to Firebase (see "Forms").
 - Section-level `empty` — text the holo panel shows when the section has
@@ -353,10 +353,21 @@ page when its JSON is deleted.
   "image": "",                    // blank = auto-detect assets/team/<slug>.jpg|.jpeg|.png|.webp
   "brief": "One line for cards and the page description (optional; defaults to the first bio paragraph).",
   "bio": ["Paragraph one.", "Paragraph two."],
-  "linkedin": "",                 // full https:// URL or blank
-  "site": ""                      // full https:// URL or blank
+  "projects": [],                 // optional: project slugs this person works on (adds them as a team member)
+  "itu": "",                      // their ITU / AI for Good profile — must be an *.itu.int URL
+  "socials": {                    // full https:// URLs; leave unused ones blank
+    "linkedin": "", "x": "", "github": "", "instagram": "",
+    "facebook": "", "youtube": "", "website": ""
+  }
 }
 ```
+
+**Every person needs an `itu` profile and at least 2 socials** (steering
+D-33). The build still runs without them, but `update_site.py` lists each
+incomplete profile until they're filled. The ITU profile is shown first in
+the icon row and every link goes into the person's JSON-LD `sameAs`. To add
+a new platform, add it to `SOCIALS` in `scripts/site_content.py` and drop a
+matching icon in `assets/icons/`.
 
 Photos for leadership and members alike go in `assets/team/`, named by
 slug (`assets/team/jane-doe.jpg`); square crops around 400×400 look best.
@@ -367,7 +378,9 @@ slug (`assets/team/jane-doe.jpg`); square crops around 400×400 look best.
 {
   "title": "AI Literacy for All",
   "ownership": "community",       // "community" (hub-run) or "member" (owned by members) — required
-  "owners": ["jane-doe"],         // team slugs; required for member projects, optional "leads" for community ones
+  "owners": ["jane-doe", "john-roe"], // team slugs; any number (co-ownership). Required for member projects, optional "leads" for community ones
+  "members": ["sam-moyo"],        // team slugs of people working on it who aren't owners (optional)
+  "sdgs": [4, 9],                 // UN Sustainable Development Goal numbers 1–17 (at least one, required)
   "status": "active",             // "planned" | "active" | "completed" | "" (optional)
   "order": 1,
   "summary": "One line — shown in lists, bold on the page (required).",
@@ -377,10 +390,24 @@ slug (`assets/team/jane-doe.jpg`); square crops around 400×400 look best.
 }
 ```
 
-Community projects list first, then member projects. A member project's
-owners link to their profiles, and each profile lists its projects.
+Community projects list first, then member projects.
+
+**Tagging people and projects** works from either side. A project's
+`owners` and `members`, plus any person who lists the project in their own
+`projects`, are all linked both ways. The project panel shows "Owned by" /
+"Co-owned by" / "Led by" and "Team". Each person's panel lists their
+projects with their role (Owner, Co-owner, Lead, Team member) and the SDGs
+those projects work towards. SDG tags link to the goal on `sdgs.un.org` and
+go into the project's JSON-LD (`about`, `keywords`).
+
+**Filters:** the Projects holo panel has "SDG" and "Person" dropdowns
+(`filter_template()` in `prerender_seo.py`, wired in `openHolo()` in
+`index.html`). They list only the SDGs and people actually tagged on
+projects, and match against each project's `data-sdgs` / `data-people`.
+
 `build_pages.py` refuses to write anything if a file is invalid (unknown
-owner, bad URL, missing image, slug clashing with a Team item like
+owner/member/project slug, SDG outside 1–17, unknown social key, non-ITU
+`itu` URL, bad URL, missing image, slug clashing with a Team item like
 `join-the-hub`) and prints every problem.
 
 ## Forms (Firebase)
@@ -451,7 +478,8 @@ downloaded when someone submits, so it costs nothing on page load.
   (`assets/projects/`, optional): named `<slug>.jpg|.jpeg|.png|.webp` and
   picked up automatically by `build_pages.py` — see "People and projects".
 - **Icons** (`assets/icons/`): small inline-style SVGs used by the
-  hologram sidebar (currently `linkedin.svg`, `website.svg` for the social
+  hologram sidebar (one per `SOCIALS` key in `site_content.py`, plus
+  `itu.svg` for the ITU profile, for the social
   row on team profile/member cards). Hand-authored, not generated — keep
   new ones in the same minimal single-color style (`#6be8ff` stroke/fill,
   24×24 viewBox).

@@ -4,7 +4,7 @@ The authoritative, up-to-date repo layout lives in `CLAUDE.md` → "Repo
 layout", next to the workflows that produce each file. This note only
 summarizes how the pieces relate.
 
-## Sources you edit
+## Sources you edit (build inputs — the browser never reads them)
 
 | Source | What it holds |
 |---|---|
@@ -18,10 +18,11 @@ summarizes how the pieces relate.
 
 | Output | Made by |
 |---|---|
-| `team/*.html`, `projects/*.html`, their `manifest.json` | `scripts/build_pages.py` |
+| `team/*.html`, `projects/*.html` (SEO landing pages, not linked) | `scripts/build_pages.py` |
 | `blogs/<slug>.html`, `blogs/manifest.json`, `assets/blogs/<slug>/` | `scripts/publish_blog.py` |
 | `firebase/firestore.rules` | `scripts/build_form_rules.py` |
-| Marker blocks in `index.html` and `blogs/index.html` | `prerender_seo.py`, `inline_data.py`, `inline_logo.py` |
+| Marker blocks in `index.html` (incl. the `#hub-content` tree) and `blogs/index.html` | `prerender_seo.py`, `inline_logo.py` |
+| `feed.xml` (RSS) | `scripts/build_feed.py` |
 | `sitemap.xml` | `scripts/build_sitemap.py` |
 | `assets/favicon/*` | `scripts/make_favicons.py` |
 

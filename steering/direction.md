@@ -45,21 +45,29 @@ That breaks down into:
 
 - The home page is a 3D night-city scene. Each section is a floating anchor
   that opens a "hologram" panel.
-- **Every person and every project has its own page** with its own URL, and
-  also appears in the hologram sidebar with its own deep link (D-27).
+- **The sidebar is where everything is read.** People, projects, posts,
+  events and forms all open there, each with its own deep link
+  (`#team/<slug>`, `#projects/<slug>`, …).
+- **Every person, project and post also has a standalone page** for search
+  engines, but nothing on the site links to it (D-27, D-31).
 - Projects come in two kinds, **community-owned** (run by the hub) and
   **member-owned** (owned by individual members), and the list is expected to
   grow (D-26).
-- Everything in the scene also exists as crawlable HTML.
+- All content is rendered into the home page's HTML at build time, so
+  crawlers read exactly what visitors see (D-30).
+- Blog posts are also published as an RSS feed, `feed.xml` (D-32).
 
 ## Principles
 
 - **Simple to run.** Static files on GitHub Pages, no framework and no
   server. Small Python scripts regenerate everything with
   `python scripts/update_site.py`.
+- **JSON is for updating, HTML is for reading** (D-30). You edit the JSON
+  and rebuild; the browser only ever sees rendered HTML.
 - **One source of truth per kind of content.** `data.json` holds site copy
   and forms, `data/team/` and `data/projects/` hold people and projects (one
   file each), the local blog drafts hold posts, and Luma holds events.
+- **Link into the sidebar, never to standalone pages** (D-31).
 - **Real over aspirational.** Show only real projects, events, people and
   posts. No placeholders or test data on the live site.
 - **Every real thing gets a page.** People, projects and posts each get a

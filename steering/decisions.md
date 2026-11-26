@@ -26,7 +26,7 @@ failure for the scene only; the crawlable content and blog pages work without
 it.
 
 ### D-03 · `data.json` is the source of truth for site copy
-**2026-07-16 · Active**
+**2026-07-16 · Active, amended by D-30 (the page no longer reads it at runtime)**
 All copy, SEO fields and anchor layout live in `data.json`. `index.html`
 contains no copy.
 **Why:** content edits touch one file and need no HTML changes.
@@ -117,7 +117,7 @@ appears only on the page and its listing card.
 **Why:** links look consistent wherever they're shared.
 
 ### D-17 · The site also works from `file://`
-**2026-07-17 · Active (supersedes the "server required" note in `36d2c95`)**
+**2026-07-17 · Superseded by D-30 (content is in the HTML, so `file://` just works; the inline JSON copies are gone)**
 Generated inline blocks embed `data.json` and the logo in `index.html`.
 Serving over HTTP is still the main workflow.
 **Why:** the site can be checked by double-clicking `index.html`, with no
@@ -191,7 +191,7 @@ Community projects list first, and each group has its own header.
 **Why:** to credit members' own work while keeping hub-run work distinct.
 
 ### D-27 · Every person and project has its own page and its own sidebar link
-**2026-11-26 · Active**
+**2026-11-26 · Active, amended by D-31 (the pages exist but aren't linked)**
 `build_pages.py` generates `team/<slug>.html` and `projects/<slug>.html` with
 their own canonical URLs and JSON-LD, all listed in `sitemap.xml`. The same
 entries open in the hologram sidebar at `#team/<slug>` and `#projects/<slug>`.
@@ -216,4 +216,34 @@ security rules from the same definitions, and the Firestore lite SDK loads
 only when someone submits. Until the Firebase config is filled in, the forms
 show an email fallback.
 **Why:** structured requests instead of loose emails, with no server to run.
+
+### D-30 · JSON is for updating only; the site is rendered to HTML at build time
+**2026-11-26 · Active (amends D-03, supersedes D-17)**
+`data.json`, `data/team/`, `data/projects/` and `blogs/manifest.json` are
+build inputs. `python scripts/update_site.py` renders them into static HTML,
+and the browser never fetches JSON. Most of it lands in `index.html`'s hidden
+`#hub-content` tree, which holds every section, item and sidebar panel. The
+3D scene and sidebar are built from that markup, and search engines read the
+same markup. Updating the site means editing the JSON and rebuilding.
+**Why:** the hub lead's call — the data files are there to update the site,
+not to be read by it. Side effects: crawlers see exactly what visitors see, no
+JSON requests, and the page works when opened from disk.
+
+### D-31 · Standalone pages aren't linked; the sidebar is where content is read
+**2026-11-26 · Active (amends D-27)**
+Person, project and post pages remain as search landing pages, each with its
+own canonical URL, JSON-LD and sitemap entry. Nothing on the site links to
+them. Every internal link, including the blog listing cards and the links
+inside those pages, is a `#<section>/<slug>` deep link that opens the
+content in the sidebar.
+**Trade-off:** search engines find these pages only through `sitemap.xml`
+(and `feed.xml` for posts), so they carry less weight than linked pages would.
+The home page's own HTML holds all the same content.
+
+### D-32 · An RSS feed of blog posts
+**2026-11-26 · Active**
+`scripts/build_feed.py` writes `feed.xml` (RSS 2.0, with full post text) on
+every build. Items link to `#blogs/<slug>`, and page heads advertise the feed
+for autodiscovery.
+**Why:** lets readers and aggregators follow the hub's posts.
 

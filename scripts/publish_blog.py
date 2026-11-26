@@ -244,7 +244,7 @@ def publish(md_path):
     print("\nNext: refresh the generated blocks and sitemap, review, then commit")
     print("(the .md draft stays local; it's gitignored) —")
     print("  python scripts/update_site.py")
-    print(f'  git add blogs/{slug}.html assets/blogs/{slug} blogs/manifest.json blogs/index.html index.html sitemap.xml')
+    print(f'  git add blogs/{slug}.html assets/blogs/{slug} blogs/manifest.json blogs/index.html index.html feed.xml sitemap.xml')
     print(f'  git commit -m "Add blog post: {title}"')
 
 

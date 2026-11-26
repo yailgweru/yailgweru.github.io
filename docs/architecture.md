@@ -7,28 +7,23 @@ There is no bundler, no framework, no `node_modules`. Everything ships as-is.
 
 ## Rendering model
 
-`index.html` is a shell: a fixed-position 3D scene (Three.js, loaded from a CDN
-`<script>` tag) plus a handful of overlay UI elements (brand badge, tooltip,
-holo-panel, story drawer). On load it fetches `data.json` and:
+The JSON files (`data.json`, `data/team/`, `data/projects/`,
+`blogs/manifest.json`) are build inputs only; the browser never reads them.
+`python scripts/update_site.py` renders them into static HTML. Most
+importantly, `prerender_seo.py` writes a hidden (`.sr-only`)
+`<main id="hub-content">` into `index.html` holding every section, item and
+sidebar panel as semantic HTML, plus the head metadata and JSON-LD.
 
-1. Builds SEO metadata (title, meta tags, JSON-LD `@graph`) via `applySeo()`.
-2. Populates a hidden (`.sr-only`) `<main id="seo-content">` with real text
-   content — this is what search engines and screen readers actually read;
-   the 3D scene is decorative on top of it.
-3. Builds the Three.js scene: a night-city environment with floating
-   "anchor" nodes, one per section in `data.json`. Clicking an anchor opens
-   a holo-panel listing that section's items; items with a `more` object
-   open the hologram side panel (people, projects, blog posts, events,
-   forms). See CLAUDE.md "Read-more sidebar".
+On load, `index.html` reads that tree. It builds the Three.js scene (a
+night-city environment with one floating "anchor" per section, positioned
+and coloured from the section's `data-pos` / `data-color`), the holo-panel
+lists, and the hologram side panel, which clones an item's prerendered
+panel. Search engines read the same tree, so crawlers and visitors see the
+same content. See CLAUDE.md "Read-more sidebar".
 
-## Data flow
-
-`data.json` is the single source of truth for site copy, SEO fields, forms
-and the 3D anchor layout (`sections[].pos`, `.color`). `index.html` has no
-hardcoded copy. People and projects live one JSON file each in
-`data/team/` and `data/projects/`; `scripts/build_pages.py` turns them into
-their own static pages plus manifests the home page reads. Blog posts come
-from `blogs/manifest.json`.
+People, projects and posts also get standalone pages, but only as SEO
+landing pages: nothing on the site links to them. All internal links are
+`#<section>/<slug>` deep links into the sidebar.
 
 ## Blog system
 
@@ -37,7 +32,7 @@ document (own `<title>`, meta description, OG tags, JSON-LD `BlogPosting`)
 so they're independently indexable and shareable. The home page's side
 panel fetches a post's `.content` block to show it in the hologram.
 
-- `blogs/manifest.json` — generated index of all published posts (title,
+- `blogs/manifest.json` — the list of published posts (title,
   slug, date, tags, topics, hero image, excerpt). `blogs/index.html` reads
   this to render the listing grid.
 - `blogs/<slug>.html` — one static file per post, built from
@@ -54,7 +49,7 @@ Rendering markdown in the browser (fetch + client-side parse) would mean
 blog content is invisible to crawlers until JS runs and is an extra
 render-blocking dependency. Pre-rendering to static HTML at authoring time
 keeps every post a plain, fast, fully-indexable document — consistent with
-how `#seo-content` is used on the home page.
+how `#hub-content` works on the home page.
 
 ## SEO surface
 
@@ -72,4 +67,4 @@ how `#seo-content` is used on the home page.
 - Three.js is loaded from cdnjs, not vendored — acceptable tradeoff for
   now (cache-friendly, one less binary to maintain in-repo) but is a
   single point of failure for the 3D scene if the CDN is down; the
-  `#seo-content` fallback and blog pages are unaffected either way.
+  `#hub-content` text and blog pages are unaffected either way.

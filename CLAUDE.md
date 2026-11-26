@@ -8,104 +8,86 @@ Young AI Leaders Gweru Hub, a static site served from GitHub Pages at
 
 A no-build, static site. `index.html` is a single-page app: a Three.js
 night-city scene (loaded from a CDN `<script>` tag) with floating "anchor"
-nodes for each content section, plus a hidden `#seo-content` block that
-holds the same content as real, crawlable HTML/text. **`data.json` is the
-single source of truth for site copy, SEO metadata, forms, and the 3D
-anchor layout** — `index.html` has no hardcoded copy. The exceptions are
-people and projects, which live one file each in `data/team/` and
-`data/projects/` (see "People and projects"), and blog posts (see
-"Blogs"). After any content edit, run `python scripts/update_site.py`.
+nodes for each content section, and a hologram sidebar that shows each
+item's full content.
 
-There is no bundler, no `node_modules`, no framework — just small Python
-scripts that regenerate static files. `index.html` loads its content with
-`fetch()` (`data.json`, the `blogs/`, `team/` and `projects/` manifests,
-and per-post HTML for the read-more sidebar), and browsers block `fetch()`
-under the `file://` origin. Serving the repo root with any static file
-server is still the correct way to develop/preview the site normally:
+**The JSON files are for updating the site only — the browser never reads
+them** (steering D-30). You edit:
+
+- `data.json` — site copy, SEO metadata, sections and their items, forms,
+  Firebase config, and the 3D anchor layout
+- `data/team/<slug>.json` and `data/projects/<slug>.json` — one person or
+  project per file (see "People and projects")
+- blog drafts (see "Blogs"), which `publish_blog.py` records in
+  `blogs/manifest.json`
+
+…then run `python scripts/update_site.py`, which renders all of it into
+static HTML: a hidden `#hub-content` tree inside `index.html` holds every
+section, item and sidebar panel as semantic HTML. Search engines read that
+tree as-is (it's the SEO content), and at runtime the page builds the 3D
+anchors, holo panels and sidebar from the same markup. `index.html` has no
+hand-written copy, and no `fetch()` of JSON ever happens.
+
+Preview with any static file server from the repo root:
 
 ```
 python -m http.server 8000    # then open http://localhost:8000/
 ```
 
-Any other static server (`npx serve`, VS Code Live Server, etc.) works
-the same way. Over `http://`/`https://`, `data.json` and
-`blogs/manifest.json` are always fetched live — editing `data.json` and
-reloading is enough, same as before.
+**Double-clicking `index.html` (`file://`) works too**, because all the
+content is already in the HTML. Two things need a real server:
 
-**Double-clicking `index.html` (`file://`) also works**, as a fallback
-for quick local checks with no server at all — but it's a degraded mode,
-not the primary workflow:
+- Blog post bodies in the sidebar are fetched from `blogs/<slug>.html`;
+  under `file://` the panel shows the post's excerpt instead (no request
+  is made, so there's no console error).
+- Forms submit to Firebase, so test them over `http(s)`.
 
-- Browsers block `fetch()` under `file://` and log every attempt as a
-  CORS error, so when `location.protocol` is `file:` the page doesn't
-  try: it reads `data.json` from an inline copy embedded in a generated
-  `<script id="site-data">` block (marked `INLINE-DATA:START`/`END`) and
-  logs one `console.info` line saying so. That block is stale the moment
-  `data.json` changes — run `python scripts/update_site.py` before
-  checking an edit under `file://`. Under a real server this fallback is
-  only used if the live fetch fails.
-- The `<link rel="manifest">` (web app manifest) is added by a tiny inline
-  script only over `http(s)`, for the same reason — under `file://` the
-  browser's own manifest request would be blocked and logged.
-- The three manifests (`blogs/`, `team/`, `projects/manifest.json`) fall
-  back the same way, to a generated `<script id="site-manifests">`
-  block (`INLINE-MANIFESTS:START`/`END`), so Team and Projects work
-  under `file://` too.
-- Per-post HTML fetches have no fallback and fail gracefully under
-  `file://` (read-more panels that use `more.fetch` show their
-  `more.fallback` text) — expected, not a bug. Forms need `https://`
-  for Firebase, so test them on a server.
-- The 3D scene's center logo disc is a WebGL texture, which is a
-  stricter case than a plain `fetch()`: Chrome treats every `file://`
-  path as its own unique origin, so WebGL refuses to texture an
-  `<img>` loaded from `assets/logo.png` there (`SecurityError` /
-  "cross-origin data"). It's loaded from a generated inline base64
-  `data:` URI instead (`INLINE-LOGO:START`/`END` block) so it works in
-  both modes — resync with `python scripts/inline_logo.py` after
-  `logo.png` changes. The header `<img>` logo isn't affected (plain
-  `<img>` display doesn't hit this WebGL restriction) and keeps using
-  the normal `assets/logo.png` path.
+The 3D scene's center logo disc is a WebGL texture, which Chrome refuses
+to load from a `file://` path, so it uses a generated inline base64 copy
+(`INLINE-LOGO:START`/`END`) in both modes. The web app manifest `<link>` is
+added by a tiny inline script only over `http(s)` for the same reason.
 
 ## The one command: `python scripts/update_site.py`
 
 Run it after **any** edit to `data.json`, `data/team/`, `data/projects/`,
-`assets/logo.png`, or after publishing/removing a blog post — even when
-previewing over `http://`, because it also rebuilds the person/project
-pages, the crawlable SEO blocks, the Firestore rules and the sitemap. In
-order, it runs:
+`assets/logo.png`, or after publishing/removing a blog post. Nothing on
+the site changes until you do. In order, it runs:
 
-1. `build_pages.py` — `team/<slug>.html`, `projects/<slug>.html` and their
-   `manifest.json`s from `data/team/` and `data/projects/`
+1. `build_pages.py` — standalone SEO pages `team/<slug>.html` and
+   `projects/<slug>.html`
 2. `build_form_rules.py` — `firebase/firestore.rules` from the forms in
    `data.json`
-3. `prerender_seo.py` — SEO head, JSON-LD, `#seo-content` and blog cards
-4. `inline_data.py` — `data.json` + manifests into the `file://` fallback
-5. `inline_logo.py` — `logo.png` into the inline WebGL texture
+3. `prerender_seo.py` — `index.html`'s head, JSON-LD, brand bar and the
+   `#hub-content` tree; the blog cards in `blogs/index.html`
+4. `inline_logo.py` — `logo.png` into the inline WebGL texture
    (+ `make_favicons.py` when `logo.png` is newer than the favicons)
+5. `build_feed.py` — `feed.xml`, the RSS feed of blog posts
 6. `build_sitemap.py` — `sitemap.xml` from every real page (last, so its
    git-based `lastmod` dates see everything the steps above rewrote)
 
-Every step only writes files whose content changed, so a second run is a
-no-op. Each script also runs on its own.
+All of them load the JSON through `scripts/site_content.py`, which
+validates everything first: if any file has a problem (bad URL, unknown
+project owner, missing photo…), every problem is printed and nothing is
+written. Every step only writes files whose content changed, so a second
+run is a no-op.
 
 ## Repo layout
 
 ```
-index.html              # app shell — 3D scene + overlay UI, reads data.json + manifests
-data.json                # all copy, SEO fields, forms, Firebase config, 3D anchor positions/colors
+index.html              # app shell — 3D scene + overlay UI + GENERATED #hub-content tree
+data.json                # SOURCE: all copy, SEO fields, forms, Firebase config, 3D anchor positions/colors
 robots.txt               # points at the sitemap
 sitemap.xml              # GENERATED by build_sitemap.py — every real page
+feed.xml                 # GENERATED by build_feed.py — RSS feed of blog posts
 
-data/                    # one JSON file per entry; the filename is the slug
+data/                    # SOURCE — one JSON file per entry; the filename is the slug
   team/<slug>.json         # a person (leadership or member)
   projects/<slug>.json     # a project (community- or member-owned)
 
 team/                    # GENERATED by build_pages.py — don't hand-edit
-  <slug>.html              # a person's own page (canonical, ProfilePage JSON-LD)
-  manifest.json            # what the home page's Team panels render from
+  <slug>.html              # a person's SEO landing page (not linked from the site)
 projects/                # GENERATED by build_pages.py — don't hand-edit
-  <slug>.html              # a project's own page (canonical, CreativeWork JSON-LD)
-  manifest.json            # what the home page's Projects panel renders from
+  <slug>.html              # a project's SEO landing page (not linked from the site)
 
 assets/
   logo.png                # source logo — regenerate favicons from this if it changes
@@ -117,8 +99,8 @@ assets/
   blogs/<slug>/                # hero + inline images per blog post (copied by publish_blog.py)
 
 blogs/
-  index.html                # blog listing — static cards prerendered by prerender_seo.py; JS adds search, Latest/Top filters and author chips
-  manifest.json               # generated metadata index of published posts
+  index.html                # blog listing — cards prerendered by prerender_seo.py (they open #blogs/<slug>); JS adds search, Latest/Top filters and author chips
+  manifest.json               # the list of published posts (written by publish_blog.py; a build input)
   <slug>.html                  # compiled static HTML for a post (committed + pushed)
   <slug>.md                    # GITIGNORED — the post's markdown draft, stays local
   images/                     # GITIGNORED — source images the drafts reference
@@ -129,13 +111,14 @@ firebase/
 
 scripts/
   update_site.py              # runs every step below in the right order (see above)
-  build_pages.py               # data/team + data/projects -> team/, projects/ pages + manifests
+  site_content.py              # shared loader + validator for every JSON source
+  build_pages.py               # data/team + data/projects -> team/, projects/ SEO pages
   _page_template.html           # the HTML shell for person and project pages
   build_form_rules.py           # data.json forms -> firebase/firestore.rules
-  build_sitemap.py               # manifests -> sitemap.xml (git-based lastmod)
-  prerender_seo.py               # bakes SEO head/JSON-LD/#seo-content/blog cards into static HTML
-  inline_data.py                 # data.json + manifests -> index.html's file:// fallback blocks
-  inline_logo.py                  # logo.png -> index.html's file:// texture data URI
+  build_sitemap.py               # every real page -> sitemap.xml (git-based lastmod)
+  prerender_seo.py               # renders index.html's head, JSON-LD, brand bar, #hub-content tree + blog cards
+  build_feed.py                  # blogs -> feed.xml (RSS)
+  inline_logo.py                  # logo.png -> index.html's inline WebGL texture data URI
   make_favicons.py                # regenerates assets/favicon/ from logo.png
   publish_blog.py                 # blogs/<slug>.md -> blogs/<slug>.html (needs pyyaml + markdown)
   _blog_template.html              # the HTML shell publish_blog.py fills in
@@ -250,14 +233,15 @@ from the reader but an HTTP GET.
 
    The first renders `blogs/<slug>.html` from `scripts/_blog_template.html`,
    copies the hero + any inline images into `assets/blogs/<slug>/`, and
-   updates `blogs/manifest.json`. The second refreshes the blog cards, the
-   home page's SEO mirror and `sitemap.xml`.
+   updates `blogs/manifest.json`. The second renders the post into the
+   home page's Blogs section and the blog cards, and refreshes `feed.xml`
+   and `sitemap.xml`.
 
 3. Review the generated `blogs/<slug>.html`, then commit the output only
    (never the `.md`):
 
    ```
-   git add blogs/<slug>.html assets/blogs/<slug> blogs/manifest.json blogs/index.html index.html sitemap.xml
+   git add blogs/<slug>.html assets/blogs/<slug> blogs/manifest.json blogs/index.html index.html feed.xml sitemap.xml
    git commit -m "Add blog post: <title>"
    ```
 
@@ -276,24 +260,28 @@ Keeping drafts out of git means only the compiled page is ever public.
 
 Any item in a `data.json` section can carry a `more` object — clicking that
 item in the 3D scene's holo panel opens the hologram side panel instead of
-the inline expander. The renderer in `index.html` is generic; all content
-is data, so adding entries never requires HTML/CSS changes:
+the inline expander. `prerender_seo.py` renders each `more` into a panel
+inside `#hub-content` (`panel_html()`), and `openSide()` in `index.html`
+clones that panel into the sidebar and wires it up (person cards, forms,
+post fetches). Adding entries never requires HTML/CSS changes — but if you
+change panel markup, change both sides (each carries a comment saying so).
+Panel images are rendered as `data-src` and only load when a panel opens.
+The `more` fields you can set in `data.json`:
 
 - `more.body` — array of paragraphs.
 - `more.title` / `more.kicker` / `more.meta` — header fields (kicker
   defaults to the section title, title to the item label).
 - `more.image` — hero image path (site-root relative).
 - `more.link` — `{ "href", "label" }`, rendered as a CTA button.
-- `more.fetch` — URL of an HTML page to pull content from at open time:
-  its `.content` block is extracted and rendered in the panel (used by
-  blog items; `more.fallback` text + a link to the page show if the fetch
-  fails).
+- `more.fetch` (set automatically for blog items) — the post page whose
+  `.content` block is loaded into the panel when it opens; until then, and
+  if loading fails, the panel shows `more.fallback` (the excerpt).
 - `more.people: "leadership" | "members" | "all"` — renders the Team
-  section's people (built at runtime from `team/manifest.json`, see
-  "People and projects"): `leadership` as full-profile cards, `members`
-  as a two-column grid, `all` as both. Every card opens that person's own
-  panel (`#team/<slug>`, with a back button to the list) and its name links
-  to their static page. A blank photo falls back to an initials avatar;
+  section's people (from `data/team/`, see "People and projects"):
+  `leadership` as full-profile cards, `members` as a two-column grid,
+  `all` as both. Every card opens that person's own panel
+  (`#team/<slug>`, with a back button to the list). A blank photo falls
+  back to an initials avatar;
   `linkedin`/`site` render as an icon-link row. `more.empty` is shown when
   the requested group has nobody in it yet.
 - `more.form` — renders a form that writes to Firebase (see "Forms").
@@ -304,14 +292,16 @@ is data, so adding entries never requires HTML/CSS changes:
   "Member projects").
 
 Links are external-aware: `item.link` / `more.link.href` pointing off-site
-open in a new tab (`target="_blank" rel="noopener"`); same-origin links
-(e.g. `blogs/<slug>.html`) navigate normally. Use this for anything that
-points off the site, like an item whose `more` is omitted and `link` is
-just an external URL string (e.g. the Events section's "All events on
-Luma" item, which points at the hub's Luma calendar).
+open in a new tab (`target="_blank" rel="noopener"`). Use `item.link` with
+no `more` for an item that simply points off the site (e.g. the Events
+section's "All events on Luma" item).
 
-The same content is mirrored into the hidden `#seo-content` block so it
-stays crawlable.
+**No links to standalone pages** (steering D-31): person, project and post
+pages exist only as search-engine landing pages. Nothing on the site links
+to them — every internal link is a `#<section>/<slug>` deep link that
+opens the content in the sidebar (including the blog listing cards and the
+links inside those standalone pages). Search engines find them through
+`sitemap.xml` (and posts through `feed.xml`).
 
 **Deep links**: every focused section and open panel is addressable —
 `#<sectionId>` focuses that anchor (e.g. `#team`), and
@@ -329,31 +319,28 @@ panels open/close, so any view can be shared as a link.
 adding/updating events, pull details from
 `https://luma.com/user/yailgweru`.
 
-**Blogs in the sidebar**: blog items are built at runtime from
-`blogs/manifest.json` and the panel is the reading experience — it fetches
-the full article body from the post's own `blogs/<slug>.html` (single
-source of truth, no duplication). The static post pages still exist as the
-crawlable/canonical copies and as a no-JS fallback; user-facing links (the
-blog listing cards, post-page back links) point at the `#blogs/<slug>`
-deep links.
+**Blogs in the sidebar**: blog items are rendered from
+`blogs/manifest.json` at build time and the panel is the reading
+experience — it loads the full article body from the post's own
+`blogs/<slug>.html` when opened (the one copy of the text). The post pages
+stay as the canonical, indexable copies.
 
 ## People and projects
 
 Each person and project is **one JSON file; its filename is its slug**
-(lowercase, hyphenated — `jane-doe.json`). `python scripts/update_site.py`
-turns them into:
+(lowercase, hyphenated — `jane-doe.json`). These files are for updating
+only; `python scripts/update_site.py` renders them into:
 
-- a static page of their own — `team/<slug>.html` /
+- their panels in the home page's hologram sidebar (`#team/<slug>`,
+  `#projects/<slug>`), inside `index.html`'s `#hub-content` tree — this is
+  where visitors see them, and
+- a standalone SEO landing page — `team/<slug>.html` /
   `projects/<slug>.html` — with its own canonical URL, OG tags and JSON-LD
-  (`ProfilePage` + `Person` for people, `CreativeWork` for projects), all
-  listed in `sitemap.xml`, and
-- an entry in `team/manifest.json` / `projects/manifest.json`, which the
-  home page renders in the hologram sidebar (`#team/<slug>`,
-  `#projects/<slug>`).
+  (`ProfilePage` + `Person` for people, `CreativeWork` for projects),
+  listed in `sitemap.xml` but not linked from anywhere on the site.
 
-So every person and project appears in the sidebar **and** has its own
-link. Never hand-edit the generated pages or manifests; `build_pages.py`
-deletes a generated page when its JSON is deleted.
+Never hand-edit the generated pages; `build_pages.py` deletes a generated
+page when its JSON is deleted.
 
 **Person** — `data/team/<slug>.json`:
 
@@ -471,27 +458,19 @@ downloaded when someone submits, so it costs nothing on page load.
 
 ## SEO
 
-- **SEO-critical HTML is prerendered into the static files** by
-  `python scripts/prerender_seo.py`, which reads `data.json` + the
-  `blogs/`, `team/` and `projects/` manifests and rewrites four generated
-  marker blocks:
-  `INLINE-SEO-HEAD` (title/meta/OG/Twitter/canonical) and `INLINE-LD-JSON`
-  (Organization + WebSite `@graph`) in `index.html`'s head,
-  `INLINE-SEO-CONTENT` (the full `#seo-content` semantic mirror of every
-  section, including links to every blog post, person and project page)
-  in `index.html`'s body, and
-  `INLINE-BLOG-LIST` (static post cards with real `.html` links) in
-  `blogs/index.html`. Crawlers that don't run JS see the full content;
-  at runtime `applySeo()` in `index.html` rebuilds the same output from
-  `data.json`, so JS and no-JS views match. **Run `python
-  scripts/update_site.py` after any `data.json` copy/SEO edit and after
-  publishing or removing a blog post** — it runs `prerender_seo.py`
-  alongside `inline_data.py`/`inline_logo.py` in the right order. Edit
-  copy in `data.json`, never in the generated blocks.
-- The Python builders in `prerender_seo.py` deliberately mirror
-  `applySeo()` and the card renderer in `blogs/index.html` — if you change
-  markup in one place, change it in the other (both sides carry a comment
-  saying so).
+- **All content is rendered into the static HTML** by
+  `python scripts/prerender_seo.py` (via `update_site.py`), which rewrites
+  generated marker blocks: `INLINE-SEO-HEAD` (title/meta/OG/Twitter/
+  canonical/RSS link) and `INLINE-LD-JSON` (Organization + WebSite
+  `@graph`) in `index.html`'s head; `INLINE-BRAND` (brand bar + hint) and
+  `INLINE-CONTENT` (the `#hub-content` tree: every section, item and
+  sidebar panel as semantic HTML) in its body; and `INLINE-BLOG-LIST`
+  (post cards) in `blogs/index.html`. Crawlers read exactly what the
+  sidebar shows. Edit copy in `data.json` / `data/`, never in the
+  generated blocks.
+- The panel markup in `prerender_seo.py` and the card markup in
+  `blogs/index.html`'s filter script are read by the page JS — if you
+  change markup on one side, change the other (both carry comments).
 - Every blog post, person and project gets its own canonical URL,
   OG/Twitter tags and JSON-LD — generated by `publish_blog.py` /
   `build_pages.py`, don't hand-write these. Share images are always the
@@ -502,6 +481,9 @@ downloaded when someone submits, so it costs nothing on page load.
   ever add a new kind of page, add it to that script.
 - SEO targets Zimbabwe, Gweru and Southern Africa first (steering D-23) —
   keep new copy and keywords in that frame.
+- **RSS**: `feed.xml` (generated by `build_feed.py`) lists every post with
+  its full text; items link to `#blogs/<slug>`. Pages advertise it with
+  `<link rel="alternate" type="application/rss+xml">` in their heads.
 - `robots.txt` points at the sitemap — keep it that way.
 
 ## Mobile-friendliness
@@ -529,15 +511,15 @@ downloaded when someone submits, so it costs nothing on page load.
 - Don't hand-write a `blogs/<slug>.html` file — always go through
   `blogs/<slug>.md` + `publish_blog.py` so metadata, images, the
   manifest, and the sitemap stay consistent. Never commit the `.md`.
-- Don't hand-edit anything in `team/`, `projects/`, `sitemap.xml` or
-  `firebase/firestore.rules` — they're generated from `data/` and
-  `data.json` by `update_site.py`.
+- Don't hand-edit anything in `team/`, `projects/`, `sitemap.xml`,
+  `feed.xml` or `firebase/firestore.rules` — they're generated from
+  `data/`, `data.json` and the blog list by `update_site.py`.
+- Don't make the page read JSON at runtime, and don't link to the
+  standalone person/project/post pages — render content into
+  `#hub-content` and link with `#<section>/<slug>` deep links.
 - Don't add a build step, framework, or package.json unless there's a
   concrete reason — the zero-build-step property is intentional.
-- Don't hand-edit the `INLINE-DATA`, `INLINE-MANIFESTS` or `INLINE-LOGO`
-  blocks in `index.html` — they're generated by `scripts/inline_data.py` /
-  `scripts/inline_logo.py`. `update_site.py` keeps them in sync.
-- Likewise don't hand-edit the `INLINE-SEO-HEAD`, `INLINE-LD-JSON`,
-  `INLINE-SEO-CONTENT` (in `index.html`) or `INLINE-BLOG-LIST` (in
-  `blogs/index.html`) blocks — rerun `python scripts/update_site.py`
-  and commit the result (see "SEO").
+- Don't hand-edit the generated blocks — `INLINE-SEO-HEAD`,
+  `INLINE-LD-JSON`, `INLINE-BRAND`, `INLINE-CONTENT`, `INLINE-LOGO` (in
+  `index.html`) or `INLINE-BLOG-LIST` (in `blogs/index.html`). Rerun
+  `python scripts/update_site.py` and commit the result.

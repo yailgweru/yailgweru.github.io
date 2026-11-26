@@ -2,6 +2,16 @@
 
 What changed on the site and why it mattered. Newest first.
 
+## 2026-11-26 · Content rendered at build time; RSS feed
+- The JSON files became build inputs only (D-30). The build renders every
+  section, item and sidebar panel into `index.html`, and the page builds
+  the 3D scene and sidebar from that HTML without fetching any JSON. The
+  console noise when the page was opened from disk went away as a side
+  effect.
+- Standalone person, project and post pages stay for search engines, but
+  nothing links to them any more (D-31).
+- Added an RSS feed, `feed.xml` (D-32).
+
 ## 2026-11-26 · Direction set: credibility, SEO, people and projects
 The hub lead answered the first round of open questions (decisions D-22 to
 D-29):

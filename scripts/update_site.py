@@ -8,16 +8,17 @@ on remembering which scripts to rerun by hand:
 
     python scripts/update_site.py
 
-Steps, always run, in this order:
-  1. build_pages.py      - team/<slug>.html + projects/<slug>.html pages and
-                            their manifests, from data/team and data/projects
+The JSON files are build inputs only; the browser never reads them. These
+steps render them into HTML/XML, always run, in this order:
+  1. build_pages.py      - standalone SEO pages team/<slug>.html and
+                            projects/<slug>.html from data/team and data/projects
   2. build_form_rules.py - firebase/firestore.rules from the forms in data.json
-  3. prerender_seo.py    - bakes SEO head/JSON-LD/#seo-content into index.html
-                            and the static blog-card list into blogs/index.html
-  4. inline_data.py      - resyncs data.json + manifests into index.html's
-                            file:// fallback blocks
-  5. inline_logo.py      - resyncs assets/logo.png into index.html's inline
+  3. prerender_seo.py    - index.html's head, JSON-LD, brand bar and the full
+                            #hub-content tree (every section, item and sidebar
+                            panel), plus the blog cards in blogs/index.html
+  4. inline_logo.py      - resyncs assets/logo.png into index.html's inline
                             WebGL texture data URI
+  5. build_feed.py       - feed.xml, the RSS feed of blog posts
   6. build_sitemap.py    - regenerates sitemap.xml from every real page (last,
                             so its lastmod dates see every file the steps
                             above rewrote)
@@ -41,7 +42,7 @@ SCRIPTS = ROOT / "scripts"
 LOGO_PNG = ROOT / "assets" / "logo.png"
 FAVICON_DIR = ROOT / "assets" / "favicon"
 
-ALWAYS_STEPS = ["build_pages.py", "build_form_rules.py", "prerender_seo.py", "inline_data.py", "inline_logo.py"]
+ALWAYS_STEPS = ["build_pages.py", "build_form_rules.py", "prerender_seo.py", "inline_logo.py", "build_feed.py"]
 LAST_STEP = "build_sitemap.py"
 
 

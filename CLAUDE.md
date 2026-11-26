@@ -95,7 +95,23 @@ scripts/
   prerender_seo.py               # committed — bakes SEO head/JSON-LD/#seo-content/blog cards into static HTML
 
 docs/                       # GITIGNORED — deeper architecture/structure notes, local only
+
+steering/                   # committed — site direction, decision log, history (see below)
+  README.md                   # what each file is for and how to keep them current
+  direction.md                 # purpose, audiences, principles, current state, open questions
+  decisions.md                  # numbered decision log (D-xx), append-only
+  history.md                     # dated timeline, newest first
 ```
+
+## Steering — read before significant work
+
+`steering/` holds the *what and why*; this file holds the *how*. Before
+any significant change (new section, redesign, content push, policy
+change), read `steering/direction.md` and check the work against its
+principles and open questions. When a decision is made, append it to
+`steering/decisions.md` (and drop the matching open question from
+`direction.md`); after a meaningful change ships, add an entry to the top
+of `steering/history.md`.
 
 Deeper "why" notes live in `docs/architecture.md` and `docs/structure.md`
 if that folder exists locally — it's gitignored on purpose (see below), so

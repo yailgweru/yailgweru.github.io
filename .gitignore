@@ -1,10 +1,8 @@
-# Internal docs — architecture/structure notes for local reference only
-docs/
-
-# Blog publish pipeline — the converter script stays local; markdown drafts
-# and their compiled output both live committed under blogs/
-scripts/publish_blog.py
-scripts/__pycache__/
+# Blog drafts — the markdown source and its source images stay local; only
+# the compiled output (blogs/<slug>.html, assets/blogs/<slug>/, manifest,
+# sitemap) is committed and pushed. See steering/decisions.md D-24.
+blogs/*.md
+blogs/images/
 
 # Python
 __pycache__/

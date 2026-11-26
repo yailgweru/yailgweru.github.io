@@ -15,3 +15,6 @@ venv/
 Thumbs.db
 .vscode/
 *.log
+
+# Local data-collection templates (members/projects/partners CSVs) — may hold personal details
+templates/
